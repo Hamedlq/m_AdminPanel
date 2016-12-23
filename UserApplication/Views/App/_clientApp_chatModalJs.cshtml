@@ -1,0 +1,240 @@
+﻿<script type="text/javascript">
+    $("#appointConfirm").click(function(e) {
+        var routeId = $("#appointRouteId").val();
+        var groupId = $("#appointGroupId").val();
+        if (IsDriver(routeId) === true) {
+            getGroupAppointmentFromUi();
+            $.ajax({
+                type: 'POST',
+                url: '/app/confirmGroup',
+                data: groupAppointment,
+                success: function (data) {
+                    showExtraMessages(data);
+                    if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                        $("#finalconfirmModal").modal("show");
+                    }
+                }
+            }).error(function (error) {
+
+            });
+            $("#finalConfirmMessage").text($finalDriverConfirmMessage);
+            $("#finalConfirmYes").text($finalConfirmYes);
+        } else if (IsDriver(routeId) === false) {
+            $("#finalConfirmYes").text($finalConfirmAndBank);
+            $("#finalconfirmModal").modal("show");
+        }
+        $("#confirmRouteId").val(routeId);
+    });
+    $("#finalConfirmYes").click(function(e) {
+        var routeId = $("#confirmRouteId").val();
+        var groupId = $("#appointGroupId").val();
+        if (IsDriver(routeId) === true) {
+            getGroupAppointmentFromUi();
+            $.ajax({
+                type: 'POST',
+                url: '/app/finalconfirmGroup',
+                data: { RouteId: routeId, GroupId: groupId },
+                success: function(data) {
+                    showExtraMessages(data);
+                    if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                        $("#finalconfirmModal").modal("hide");
+                        $("#appointmentModal").modal("hide");
+                        disableFields();
+                        disableButtons();
+                        $.each(data.Messages, function (key, value) {
+                            showMessage.Success("", value);
+                        });
+                    }
+                }
+            }).error(function(error) {
+
+            });
+
+        } else if (IsDriver(routeId) === false) {
+            $("#finalconfirmModal").modal("hide");
+            $("#appointmentModal").modal("hide");
+            setTimeout(function() {
+                showMessage.Success("", "پرداخت با موفقیت انجام گردید");
+            }, 2000);
+        }
+
+    });
+    $("#AppointOnMap").click(function (e) {
+        var routeId = $("#confirmRouteId").val();
+        if ($("#appointLocation").val() !== "") {
+            showAppointmentPlace();
+        } else if (IsDriver(routeId) === true) {
+            $("#appointmentModal").modal("hide");
+            var groupId = $("#appointGroupId").val();
+            zoomtoSrc(groupId);
+            appointMarker = true;
+        } else {
+            showMessage.Info("", $appointnotset);
+        }
+    });
+    $("#submitchats").click(function (e) {
+        e.preventDefault();
+        var msg = $("#chattxt").val();
+        $.ajax({
+            type: 'POST',
+            url: '/app/submitChat',
+            data: { chat: msg, mobileNo: $userMobileNo },
+            success: function(data) {
+                showExtraMessages(data);
+                $("#chattxt").val("");
+                //if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+
+                //$.each(data.Messages, function(key, value) {
+                //    showMessage.Success("", value);
+                //});
+                //}
+            }
+        }).error(function(error) {
+
+        });
+    });
+
+    //----------------------------functions---------------------------
+    function showAppointmentPlace() {
+        var lat=$('#appointLocLatitude').val();
+        var lng=$('#appointLocLongitude').val();
+        appointMarker = false;
+        removeLayerFromMap(appointmentMarker);
+        appointmentMarker = new L.Marker([lat, lng], { icon: IconAppoint });
+        map.addLayer(appointmentMarker);
+        $("#appointmentModal").modal("hide");
+    }
+    function disableFields() {
+        $("#appointtimepicker").prop('disabled', true);
+        $("#appointLocation").prop('disabled', true);
+        $("#confirmedPrice").prop('disabled', true);
+    }
+    function enableFields() {
+        $("#appointtimepicker").prop('disabled', false);
+        $("#appointLocation").prop('disabled', false);
+        $("#confirmedPrice").prop('disabled', false);
+    }
+    function disableButtons() {
+        $("#appointConfirm").prop('disabled', true);
+    }
+
+    function setAppointmentPoint(latlng) {
+        $('#appointLocLatitude').val(latlng.lat);
+        $('#appointLocLongitude').val(latlng.lng);
+        appointMarker = false;
+        removeLayerFromMap(appointmentMarker);
+        appointmentMarker = new L.Marker(latlng, { icon: IconAppoint });
+        map.addLayer(appointmentMarker);
+        setTimeout(function() {
+            $("#appointmentModal").modal("show");
+        }, 1000);
+    };
+
+    function zoomtoSrc(groupId) {
+        var counter = 0;
+        currentGroupLayer.length = 0;
+        $.each(groupRouteList, function(key, value) {
+            if (parseInt(value.GroupId) === parseInt(groupId)) {
+                var popup = '';
+                switch (counter) {
+                case 0:
+                    popup = '<div class="popup greenpopup"><div class="pull-left"><img src="/Content/img/ax.jpg" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                        '<div><b>' + $time + ': </b>' + value.TimingString + '</div><div><b>' + $cost + ': </b>' + value.PricingString + '</div>' +
+                        '<div><b>' + $srcDistance + ': </b>' + value.SrcDistance + '</div><div><b>' + $dstDistance + ': </b>' + value.DstDistance + '</div></div>';
+                    var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                    srcGreenMarker = new L.Marker(srclatlng, { icon: IconGreen }).bindPopup(popup);
+                    currentGroupLayer.push(srcGreenMarker);
+                    break;
+                case 1:
+                    popup = '<div class="popup orangepopup"><div class="pull-left"><img src="/Content/img/ax.jpg" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                        '<div><b>' + $time + ': </b>' + value.TimingString + '</div><div><b>' + $cost + ': </b>' + value.PricingString + '</div>' +
+                        '<div><b>' + $srcDistance + ': </b>' + value.SrcDistance + '</div><div><b>' + $dstDistance + ': </b>' + value.DstDistance + '</div></div>';
+                    var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                    srcOrangeMarker = new L.Marker(srclatlng, { icon: IconOrange }).bindPopup(popup);
+                    currentGroupLayer.push(srcOrangeMarker);
+                    break;
+                case 2:
+                    popup = '<div class="popup bluepopup"><div class="pull-left"><img src="/Content/img/ax.jpg" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                        '<div><b>' + $time + ': </b>' + value.TimingString + '</div><div><b>' + $cost + ': </b>' + value.PricingString + '</div>' +
+                        '<div><b>' + $srcDistance + ': </b>' + value.SrcDistance + '</div><div><b>' + $dstDistance + ': </b>' + value.DstDistance + '</div></div>';
+                    var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                    srcBlueMarker = new L.Marker(srclatlng, { icon: IconBlue }).bindPopup(popup);
+                    currentGroupLayer.push(srcBlueMarker);
+                    break;
+                case 3:
+                    popup = '<div class="popup redpopup"><div class="pull-left"><img src="/Content/img/ax.jpg" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                        '<div><b>' + $time + ': </b>' + value.TimingString + '</div><div><b>' + $cost + ': </b>' + value.PricingString + '</div>' +
+                        '<div><b>' + $srcDistance + ': </b>' + value.SrcDistance + '</div><div><b>' + $dstDistance + ': </b>' + value.DstDistance + '</div></div>';
+                    var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                    srcRedMarker = new L.Marker(srclatlng, { icon: IconRed }).bindPopup(popup);
+                    currentGroupLayer.push(srcRedMarker);
+                    break;
+                default:
+                    return;
+                }
+
+                var group = new L.featureGroup(currentGroupLayer).addTo(map).openPopup();
+                map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            }
+        });
+    }
+
+    function refreshChats(mobileNo) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/getChats',
+            data: { Mobile: mobileNo },
+            success: function(data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $("#chats").empty();
+                    $.each(data.Messages, function(key, value) {
+                        var comment = JSON.parse(value);
+                        var deletebtn = "";
+                        if (comment.IsDeletable === true) {
+                            deletebtn = '<button type="button" class="btn btn-default pull-left">حذف</button>';
+                        }
+                        var msg = '<li class="comment clearfix" data-comment-id="1"><div class="comment-avatar"><img src="/user/CommentUserImage/' + comment.CommentId + '" alt="" />' +
+                            '</div><div class="comment-content"><div class="comment-user">' + comment.NameFamily + deletebtn +
+                            '</div><div class="comment-time">' + comment.TimingString + '</div><div class="comment-msg">' + comment.Comment + '</div>' +
+                            '</div></li>';
+                        $("#chats").append(msg);
+                    });
+                }
+            }
+        }).error(function(error) {
+
+        });
+    }
+
+    function getPaymentMessage(routeId, groupId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/getPassengerConfirmInfo',
+            data: { GroupId: groupId, RouteId: routeId },
+            success: function(data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        var appointInfo = JSON.parse(value);
+                        $("#finalConfirmMessage").text(appointInfo.ConfirmedPriceMessage);
+                        $("#appointtimepicker").val(appointInfo.AppointTimeString);
+                        $("#appointLocation").val(appointInfo.GAppointAddress);
+                        $("#appointLocLatitude").val(appointInfo.GAppointLatitude);
+                        $("#appointLocLongitude").val(appointInfo.GAppointLongitude);
+                        $("#confirmedPrice").val(appointInfo.ConfirmedPriceString);
+                    });
+                }
+            }
+        }).error(function(error) {
+
+        });
+    }
+
+   
+
+</script>

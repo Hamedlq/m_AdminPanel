@@ -1,0 +1,770 @@
+﻿@model dynamic
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Scoop faqs | Colupsus Landing Page Documentation">
+    <meta name="author" content="Scoop faqs">
+    <title>راهنمای شبکه اجتماعی می بریم</title>
+    <link href="/Content/assets/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Content/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Content/assets/css/fonts.css" rel="stylesheet">
+    <link href="/Content/assets/css/helpMain.css" rel="stylesheet">
+</head>
+<body style="direction:rtl;">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="@Url.Action("Index", "home")">
+                        <img src="/Content/img/eco/logo.png">
+                    </a>
+                </li>
+                <li class="main-search">
+                    <form>
+                        <input type="text" class="form-control" placeholder="جستجو...">
+                        <span class="fa fa-search"></span>
+                    </form>
+                </li>
+                <li>
+                    <a href="#GettingStarted">معرفی</a>
+                </li>
+                <li>
+                    <a href="#instruction">راهنمای استفاده<span class="fa fa-angle-down"></span></a>
+                    <ul>
+                        <li><a href="#source">آدرس مبدا</a></li>
+                        <li><a href="#destination">آدرس مقصد</a></li>
+                        <li><a href="#accompany">همراهان</a></li>
+                        <li><a href="#hasCar">خودرو</a></li>
+                        <li><a href="#timing">زمان حرکت</a></li>
+                        <li><a href="#pricing">مبلغ</a></li>
+                        <li><a href="#userInfo">اطلاعات کاربر</a></li>
+                        <li><a href="#myRoutes">مسیرهای من</a></li>
+                        <li><a href="#suggestRoute">مسیر پیشنهادی</a></li>
+                        <li><a href="#myGroup">گروه هم مسیری</a></li>
+                        <li><a href="#suggestGroup">گروه هم مسیر پیشنهادی</a></li>
+                        <li><a href="#appointment">قرار ملاقات</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#faq">سوال های متداول</a>
+                </li>
+                <li>
+                    <a href="#rules">شرایط و قوانین</a>
+                </li>
+                <li>
+                    <a href="#feedback">گزارش مشکل</a>
+                </li>
+                <li>
+                    <a href="#thanks">سپاسگزاریم</a>
+                </li>
+            </ul>
+            <div class="copy-rights">
+                <span>
+                    تمامی حقوق برای وبسایت <a href="http://Mibarim.ir" target="_blank">Mibarim.ir</a> محفوظ است
+                </span>
+            </div>
+        </div>
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="content-header">
+                <a id="menu-toggle" href="#" class="btn btn-default">
+                    <span class="fa fa-bars"></span>
+                </a>
+                <h1 id="GettingStarted">
+                    معرفی شبکه اجتماعی می بریم
+                </h1>
+            </div>
+            <!-- Keep all page content within the page-content inset div! -->
+            <div class="page-content inset">
+                <div id="OverView">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="lead">
+                                بسیاری از ما روزانه برای تردد در شهر از تاکسی ها استفاده می کنیم که این تاکسی ها در نقاط مختلف شهر ایستگاه دارند و یا مسیرهایی را طی می کنند که برای اکثر ما شناخته شده است.
+                                اما معمولا اکثر ما برای طی یک مسیر مجبور می شویم چند تاکسی عوض کنیم و علاوه بر پرداخت مبلغی بیشتر، زمان بیشتری را نیز از دست می دهیم.
+                            </p>
+                            <p class="lead">
+                                حتی در برخی مواقع به علت دوری خانه یا محل کارمان از ایستگاه تاکسی مجبوریم فاصله ای طولانی تا ایستگاه تاکسی را پیاده راه برویم و بعد از اینکه
+                                به ایستگاه تاکسی رسیدیم با صف طولانی افراد منتظر برای تاکسی روبرو می شویم و در عین خستگی کلی از وقتمان را در صف ها از دست می دهیم.
+                            </p>
+                            <p class="lead">
+                                آیا تا به حال به خودروهای تک سرنشین اطرافتان و یا به تاکسی های زیادی که در سطح شهر بدون هیچ مسافری تنها سوخت می سوزانند دقت کرده اید.
+                                اگر بتوان صندلی های این خودروها را پر کرد و حرکت این تاکسی ها را هدفمند کرد آیا شهرهای ایران محل بهتری برای زندگی نمی شوند؟
+                            </p>
+                            <p class="lead">
+                                شبکه های اجتماعی برای ارتباط مجازی افرادی به وجود آمده است که معمولا اهداف و ارتباطات نزدیکی با یکدیگر دارند.
+                                شبکه اجتماعی حمل و نقل نیز بر پایه این اصل کار خود را شروع کرده است و سعی می کند افرادی که روزانه با تاکسی در شهر تردد می کنند و مبدا و مقصد نزدیکی دارند
+                                شناسایی کرده و تاکسی ها یا خودروهای تک سرنشین را برای رساندن این افراد به مقاصد مورد نظرشان فراهم کند.
+                            </p>
+                            <p class="lead">به امید روزی که بتوانیم با خرد جمعی آلودگی هوا را کاهش دهیم و حمل و نقل شهرهایمان را بهبود دهیم</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Overview-->
+                <div class="row" id="instruction">
+                    <div class="col-md-12">
+                        <h3>راهنمای استفاده</h3>
+                        <p>@*در این سیستم سعی شده است کلیه فرآیندهای مربوط به سوار شدن شما به تاکسی و پرداخت ها در نظر گرفته شود*@</p>
+                        <p>در صورتیکه در این فرآیند مشکل یا ابهای دارید از بخش گزارش مشکل به ما اطلاع دهید.</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" id="timeline">
+                    <div class="col-md-12">
+                        <div class="timeline clearfix" data-breakpoint="1000">
+                            <div class="timeline-label">
+                                <span>ورود</span>
+                            </div>
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="destination">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <img class="media-object pull-left descriptionimg" src="/Content/assets/img/Destination.jpg" alt="" />
+                                                    <p>
+                                                        با کلیک بر روی نقشه می توانید مقصد حرکت خود را مشخص کنید،آدرس مربوط به مقصد به صورت خودکار در فیلد مربوطه
+                                                        نمایش داده می شود اما در صورت لزوم می توانید جزییات آدرس را نیز ثبت کنید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>مقصد مسیر</h3>
+                                                </div>
+                                            </footer>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-location-arrow"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="source">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>مبدا مسیر</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <img class="media-object pull-left descriptionimg" src="/Content/assets/img/Source.jpg" alt="" />
+                                                    <p>
+                                                        با کلیک بر روی نقشه می توانید مبدا حرکت خود را مشخص کنید،آدرس مربوط به مبدا به صورت خودکار در فیلد مربوطه
+                                                        نمایش داده می شود اما در صورت لزوم می توانید جزییات آدرس را نیز ثبت کنید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-location-arrow"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="accompany">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        در صورتیکه فردی مسن یا خردسال که توانایی ثبت نام در این شبکه اجتماعی را ندارد همراه شما هست تعداد آن ها را باید
+                                                        مشخص کنید و سایر افرادی که می خواهند همراه شما بیایند باید در سیستم ثبت نام کنند و با ساخت یک گروه
+                                                        هم ماشینی در یک ماشین قرار می گیرید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>همراهان</h3>
+                                                </div>
+                                            </footer>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-user-plus"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="timing">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>چه وقتایی میخای این مسیرو بری؟</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        زمانی که می خواهید از مبدا شروع به حرکت کنید معمولا به صورت تکراری یا در زمان مشخصی است. با مشخص کردن این زمان، شبکه اجتماعی حمل و نقل
+                                                        تمام افرادی که در فاصله زمانی 2 ساعت از شما همین مسیر را طی می کنند به شما پیشنهاد خواهد داد
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="hasCar">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>خودرو دارید</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        در صورتیکه مالک خودرو شخصی یا تاکسی هستید، می توانید بله را انتخاب کنید و انتخاب بله به معنی این نیست که باید حتما از خودروی خود
+                                                        استفاده کنید و در صورتیکه شخص دیگری در گروه شما خودرو داشته باشد می توانید از خودروی آن فرد استفاده نمایید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-cab"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>خودرو ندارید</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        در صورتیکه خودروی شخصی ندارید و همیشه از وسایل حمل و نقل عمومی استفاده می کنید گزینه خیر
+                                                        را انتخاب کنید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-cab"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="userInfo">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>اطلاعات شما</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        اطلاعات کاربری و خودروی شما باید به صورت کامل تکمیل شود.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="pricing">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>هزینه مسیر</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        هزینه مسیر تنها برای آگاهی دیگران استفاده می شود و در فیلترینگ تاثیری ندارد
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-cab"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="myRoutes">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>مسیرهای من</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        پس از تایید و ثبت مسیر، می توانید اطلاعات مسیر خود را مشاهده کنید و در صورت کلیک بر روی هر مسیر افرادی که هم مسیر شما هستند نمایش داده می شوند
+                                                        و می توانید با این افراد گروه هم ماشین خود را تشکیل دهید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-road"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="suggestRoute">
+                                        <div class="timeline-event-box clearfix">
+                                           
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        با انتخاب گزینه "افزودن به گروه هم ماشین من" در هر یک از مسیرهای پیشنهادی، این مسیر به گروه هم ماشین شما
+                                                        اضافه می شود و باید منتظر فرد مورد نظر باشید تا او نیز هم مسیری با شما را تایید کند
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>مسیرهای پیشنهادی</h3>
+                                                </div>
+                                            </footer>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-group"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event" id="suggestGroup">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>گروه هم ماشین پیشنهادی</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        با افزودن افراد به گروه هم ماشینی، این گروه در گروه هم ماشین پیشنهادی برای کاربر دیگر نمایش داده می شود
+                                                        و او می تواند عضویت در گروه هم ماشینی شما را تایید کند و پس از آن می توانید در بخش "قرار ملاقات" برای یکدیگر پیغام بگذارید
+                                                        و شرایط مختلف را با یکدیگر هماهنگ کنید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-cab"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="myGroup">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        با انتخاب گزینه "افزودن به گروه هم ماشین من" در هر یک از مسیرهای پیشنهادی، این مسیر به گروه هم ماشین شما
+                                                        اضافه می شود و باید منتظر فرد مورد نظر باشید تا او نیز هم مسیری با شما را تایید کند
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>گروه هم ماشین من</h3>
+                                                </div>
+                                            </footer>
+
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-group"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>پیوستن به گروه</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        با افزودن افراد به گروه هم ماشینی، این گروه در گروه هم ماشین پیشنهادی برای کاربر دیگر نمایش داده می شود
+                                                        و او می تواند عضویت در گروه هم ماشینی شما را تایید کند و پس از آن می توانید در بخش "قرار ملاقات" برای یکدیگر پیغام بگذارید
+                                                        و شرایط مختلف را با یکدیگر هماهنگ کنید
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-plus"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event" id="appointment">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        در بخش قرار ملاقات یکی از افرادی که ماشین دارد می تواند قرار ملاقات بگذارد و مکان دقیق ملاقات، زمان و هزینه مسیر را مشخص کند
+                                                        @*و سایر افراد گروه نیز با تایید قرار ملاقات می توانند به بخش پرداخت وجه منتقل شوند*@
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>قرار ملاقات</h3>
+                                                </div>
+                                            </footer>
+
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            @*<div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>پرداخت وجه</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        افراد با پرداخت وجه متعهد می شوند که با خودروی شما این مسیر را طی نمایند و باید در زمان مشخص شده
+                                                        در مکان مشخص شده حضور داشته باشند
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-money"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        تمام اعضای گروه باید در زمان مشخص شده در مکان مشخص شده حضور یابند و از طریق مکانیزمهایی که ارایه می شود
+                                                        حضور سایر افراد گروه را نیز تایید کنند
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>سر قرار</h3>
+                                                </div>
+                                            </footer>
+
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-smile-o"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->
+                            <div class="timeline-row">
+                                <div class="timeline-leftside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <header class="timeline-event-header">
+                                                <div class="pull-right">
+                                                    <h3>دریافت وجه</h3>
+                                                </div>
+                                            </header>
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        پس از طی مسیر، فرآیند ارسال وجه به حساب راننده شروع می شود و پول برای ارسال به حساب راننده
+                                                        آماده می شود و با توجه به تقاضای راننده، وجه مورد نظر به حساب راننده پرداخت می شود
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line"></span>
+                                        <span class="timeline-connector-circle">
+                                            <span>
+                                                <i class="fa fa-money"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                                <div class="timeline-rightside">
+                                    <div class="timeline-event">
+                                        <div class="timeline-event-box clearfix">
+                                            <div class="timeline-event-content">
+                                                <div class="inner-padding">
+                                                    <p>
+                                                        برای رتبه بندی و تشخیص نحوه رفتار افراد، نظر خواهی برگزار می شود و باید به افرادی که همراه شما بودند
+                                                        رتبه دهید و نظرات خود را بنویسید. این نظرات در پروفایل عمومی کاربر نمایش داده می شود و سایر افرادی
+                                                        که می خواهند با شخصی هم مسیر شوند می توانند از طریق این اطلاعات هم مسیرها و راننده های خوب را تشخیص دهند
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <footer class="timeline-event-footer">
+                                                <div class="pull-right">
+                                                    <h3>نظر خواهی</h3>
+                                                </div>
+                                            </footer>
+
+                                        </div><!-- End .timeline-event-box -->
+                                        <span class="timeline-connector-line connector-bottom"></span>
+                                        <span class="timeline-connector-circle connector-bottom">
+                                            <span>
+                                                <i class="fa fa-user"></i>
+                                            </span>
+                                        </span>
+                                    </div><!-- End .timeline-event -->
+                                </div>
+                            </div><!-- End .timeline-row -->*@
+                        </div>
+                    </div>
+                </div><!-- End .timeline -->
+                <hr>
+                <div class="row" id="faq">
+                    <div class="col-md-12">
+                        <h3>سوال های متداول</h3>
+                        <div class="faq">
+                            <article class="faq-group">
+                                <header>
+                                    <i class="fa fa-plus"></i>
+                                    <h3>در صورت امکان می توانم اطلاعاتی از کاربران دیگر گروه هم ماشینی خود داشته باشم</h3>
+                                </header>
+                                <div class="faq-content clearfix">
+                                    <p>
+                                        در بخش "قرار ملاقات" می توانید به اعضای گروه هم ماشینی پیغام بدهید و از هر یک از افراد اطلاعات مورد نیازتان را دریافت کنید
+                                    </p>
+                                    <div class="spacer-20"></div>
+                                </div>
+                            </article><!-- End .faq-group -->
+                            <article class="faq-group">
+                                <header>
+                                    <i class="fa fa-plus"></i>
+                                    <h3>آیا می توان به خودروها و راننده هایی که در این وبسایت حضور دارند اعتماد کرد</h3>
+                                </header>
+                                <div class="faq-content clearfix">
+                                    <p>
+                                        شما در خیابان سوار ماشین هایی می شوید که هویت راننده و خودرو برای شما ناشناس است بنابراین میزان اعتمادی که در این سیستم وجود
+                                        دارد از خودروهایی که روزانه سوار می شویم بیشتر است. در صورتیکه نکات امنیتی مانند عدم قرار ملاقات در مکان های خلوت و همچنین چک کردن پلاک خودرو را
+                                        در نظر بگیرید، پس از مدتی مزیتی های این سیستم باعث می شود که دیگر هرگز در کنار خیابان منتظر تاکسی نایستید و از این سیستم استفاده کنید. علاوه بر این در این برنامه 
+                                       پس از هر سفر در مورد هر کاربر بازخوردی دریافت می شود که می توانید برای اطمینان بیشتر به آن ها مراجعه کنید
+                                    </p>
+                                    <div class="spacer-10"></div>
+                                </div>
+                            </article><!-- End .faq-group -->
+                            <article class="faq-group">
+                                <header>
+                                    <i class="fa fa-plus"></i>
+                                    <h3>آیا می توان از این برنامه در سفرهای بین شهری نیز استفاده کرد</h3>
+                                </header>
+                                <div class="faq-content clearfix">
+                                    <p>
+                                        بله، الگوریتیمی که در این برنامه به کار برده می شود نسبت فاصله مبدا و مقصد را در نظر میگیرد و کاربران را به هم پیشنهاد می دهد بنابراین 
+                                        حتی در سفرهای بین شهری نیز این برنامه به خوبی کار می کند و افرادی که از یک شهر به یک شهر دیگر می خواهند سفر داشته باشند 
+                                        را به یکدیگر پیشنهاد می دهد
+                                    </p>
+                                    <div class="spacer-10"></div>
+                                </div>
+                            </article><!-- End .faq-group -->
+
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" id="rules">
+                    <div class="col-md-12">
+                        <h3>شرایط و قوانین</h3>
+                        <p>شرایط و قوانین استفاده از "می بریم" </p>
+                        <div>
+                            <p>1- برای عضویت کامل در برنامه "می بریم" و استفاده از آن، اطلاعات مربوط به نام و نام خانوادگی و شماره تلفن همراه باید به صورت صحیح وارد شود.  </p>
+                            <p>
+                                2-در صورتیکه فردی بخواهد از خودروی خود استفاده نماید باید اطلاعات مربوط به خودرو و گواهینامه خود را به طور کامل وارد نمایید. در صورت عدم
+                                ورود صحیح این اطلاعات، شخص نمی تواند از خودروی خود در مسیرها استفاده نماید.
+                            </p>
+                            <p>
+                                3-تنها در صورتیکه خوردوی معرفی شده تاکسی باشد، می تواند از عبارت "تاکسی" در عنوان نوع خودرو استفاده نماید و صحت آن با کارت ماشین سنجیده شده و در صورت مغایرت
+                                عنوان "تاکسی" از عبارت نوع خودرو حذف می شود
+                            </p>
+                            <p>
+                                4- اطلاعات مربوط به نام، نام خانوادگی، نوع خودرو، پلاک خودرو و مسیر های افراد در اختیار هم مسیران آن ها قرار می گیرد و سایر اطلاعات به هیچ  عنوان در اختیار اشخاص
+                                و موسسات دیگر قرار نمی گیرد و کاملا محرمانه تلقی می شود
+                            </p>
+                            @*<p>
+                                5-اطلاعات بانکی برای واریز مبلغ کرایه و یا واریز مبالغ بازگشتی به کار می رود و مسئولیت هرگونه مشکل در اطلاعات وارد شده بر عهده خود کاربر می باشد
+                            </p>
+                            <p>
+                                6-در حال حاضر برای ارایه خدمات در این وبسایت مبلغی به عنوان کارمزد کسر نمی شود اما ممکن است در آینده پس از اطلاع به کاربران مبلغی به عنوان کارمزد کسر شود
+                            </p>
+                            <p>
+                                7-کاربرانی که رانندگی گروه را بر عهده دارند و زمان و مکان ملاقات و مبلغ مسیر را تعیین می کنند موظف هستند در زمان مقرر در
+                                مکان مقرر حضور داشته باشند و عدم حضور آن ها در محل ملاقات علاوه بر اینکه باعث مسدود شدن حساب کاربری آن ها می شود، این افراد را متعهد به جبران هرگونه خسارت
+                                از طرف سایر کاربران هم ماشین وی می کند و این وبسایت هیچگونه مسئولیتی در این قبال ندارد.
+                            </p>
+                            <p>
+                                8- در زمان ملاقات حضور یا عدم حضور افراد از طریق پیامک و مکان یابی مورد بررسی قرار می گیرد، بنابراین باید تلفن همراه در آن زمان روشن باشد و مکان یاب آن فعال باشد
+                                و توانایی ارسال و دریافت پیامک را نیز داشته باشد
+                            </p>
+                            <p>
+                                9- کاربران باید در قبال مکانیزم هایی که در زمان ملاقات و پس از آن اجرا می شود مسئولیت داشته و به سوالاتی که پرسیده می شود پاسخ دهند و مسئولبت عدم پاسخگویی آن ها بر عهده خود کاربر می باشد
+                            </p>
+                            <p>
+                                10- در صورتیکه کاربری غیر از راننده در زمان مقرر در مکان مقرر حضور نداشته باشد 30درصد از مبلغ پرداختی او کسر شده و مابقی به حساب وی بازگشت داده می شود
+                            </p>
+                            <p>
+                                11- در صورت عدم حضور کاربرانی غیر از راننده در زمان و مکان مقرر، 20 درصد از مبلغ قابل پرداخت برای مسیر به حساب راننده واریز می شود
+                            </p>*@
+                            <p>
+                                5- این وبسایت در قبال اتفاقاتی که در زمان ملاقات  و در طی مسیر می افتد مسئولیتی ندارد بنابراین بهتر است مکان ملاقات و مسیر حرکتُ در محیط های پرتردد باشد و
+                                پلاک ماشین را قبل از سوار شدن چک نمایید
+                            </p>
+                            <p>
+                                6-عضویت و تعیین مسیر در برنامه "می بریم"، به منزله پذیرش و پایبندی به تمامی مفاد این قرارداد محسوب می شود
+                            </p>
+
+
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" id="feedback">
+                    <div class="col-md-12">
+                        <h3>گزارش مشکل</h3>
+                        <p>لطفا هرگونه مشکل یا سوال در مورد برنامه یا این راهنما را به ما اطلاع دهید</p>
+                        <div class="row">
+                            <div class="col-md-2 direction-ltr">
+
+                            </div>
+                            <div class="col-md-8  ">
+                                <form id="contactForm" role="form">
+                                    <div class="contact-alert-wrap"></div>
+                                    <div class="form-group">
+                                        <input type="text" id="contactName" name="contactName" class="form-control " required placeholder="نام">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" id="contactEmail" name="contactEmail" class="form-control controls" required placeholder="پست الکترونیکی">
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea cols="30" id="contactText" name="contactText" rows="5" class="form-control controls" required placeholder="پیغام شما"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg">ثبت</button>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" id="thanks">
+                    <div class="col-md-12">
+                        <h3>سپاسگزاریم</h3>
+                        <div>
+                            از اینکه از این برنامه استفاده می کنید و با نظرات و پیشنهادات و بازخوردهای خود ما را برای ارایه خدمات بهتر یاری می رسانید بسیار سپاسگزاریم
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript -->
+    <script type='text/JavaScript' src="/Content/assets/js/jquery-2.1.4.min.js"></script>
+    <script type='text/JavaScript' src="/Content/assets/js/bootstrap.min.js"></script>
+    <script type='text/JavaScript' src="/Content/assets/js/helpCommon.js"></script>
+
+    <!-- Custom JavaScript for the Menu Toggle -->
+    <script>
+            $(document).ready(function () {
+                DocMaster.treeMenu();
+                DocMaster.sideToggle();
+                DocMaster.scrollToElement();
+            });
+    </script>
+</body>
+</html>
+

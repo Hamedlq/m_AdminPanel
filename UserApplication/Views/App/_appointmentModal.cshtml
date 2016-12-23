@@ -1,0 +1,116 @@
+﻿<div class="modal fade direction-rtl" id="appointmentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-left" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">قرار ملاقات</h4>
+            </div>
+            <div class="modal-button">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">نمیخام برم</button>
+                <button type="submit" id="appointConfirm" class="btn btn-primary " >تایید</button>
+            </div>
+            <div class="alert-wrap"></div>
+            <div class="modal-body">
+                <form id="appointmentform">
+                    <input type="hidden" id="appointGroupId" value="" />
+                    <input type="hidden" id="appointRouteId" value="" />
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12 pull-right">
+                                <div class="col-md-4 pull-right">
+                                    <label>زمان دقیق ملاقات</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="appointtimepicker" class="form-control direction-rtl" type="text"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>مکان دقیق ملاقات</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-location-arrow"></i></span>
+                                        <input type="text" class="form-control direction-rtl" id="appointLocation" placeholder="جزییات دقیق محل ملاقات"/>
+                                    </div>
+                                    <button type="button" id="AppointOnMap" class="btn btn-default">محل دقیق قرار ملاقات روی نقشه</button>
+                                    <input type="hidden" id="appointLocLatitude" value="" />
+                                    <input type="hidden" id="appointLocLongitude" value="" />
+
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>هزینه مسیر</label>
+                                    <div class="input-group input-group direction-ltr">
+                                        <span class="input-group-addon">ریال</span>
+                                        <input class="form-control direction-rtl" id="confirmedPrice" type="text" placeholder="هزینه ای که پرداخت می کنید">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div class="spacer-5"></div><hr>
+                <div class="clear"></div>
+                <fieldset>
+                    <div class="form-group">
+                        <div class="col-md-12 pull-right">
+                            <div class="comments">
+                                <div class="comment-replyform" id="reply-form">
+                                    <form id="commentForm">
+                                        <textarea class="form-control direction-rtl" id="commenttxt" placeholder="ثبت نظر برای سایر اعضای گروه"></textarea>
+                                        <div class="spacer-5"></div>
+                                        <div class="pull-right">
+                                            <button type="submit" id="submitComment" class="btn btn-default">ثبت نظر</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="spacer-25"></div>
+                                <ul id="comments">
+                                    @*<li class="comment clearfix" data-comment-id="1">
+                                        <div class="comment-avatar">
+                                            <img src="/content/img/ax.jpg" alt=""/>
+                                        </div>
+                                        <div class="comment-content">
+                                            <div class="comment-user">
+                                                حامد لشکری
+                                                <button type="button" class="btn btn-default pull-left">حذف</button>
+                                            </div>
+                                            <div class="comment-time">
+                                                سه شنبه 12/8/94 ساعت 12:28
+                                            </div>
+                                            <div class="comment-msg">
+                                                آقا یه خورده زودتر بریم
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="comment clearfix" data-comment-id="1">
+                                        <div class="comment-avatar">
+                                            <img src="/content/img/ax.jpg" alt="" />
+                                        </div>
+                                        <div class="comment-content">
+                                            <div class="comment-user">
+                                                حامد لشکری
+                                                <button type="button" class="btn btn-default pull-left">حذف</button>
+                                            </div>
+                                            <div class="comment-time">
+                                                سه شنبه 12/8/94 ساعت 12:28
+                                            </div>
+                                            <div class="comment-msg">
+                                                آقا یه خورده زودتر بریم
+                                            </div>
+                                        </div>
+                                    </li>*@
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+

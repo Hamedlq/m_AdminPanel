@@ -1,0 +1,628 @@
+﻿@using ServiceLayer.Models
+<script type="text/javascript">
+    //-------------------------variables----------------------------
+    var timingOptionToday = '@TimingOptions.Today';
+
+    var routeList = [];
+    var currentGroupLayer = [];
+    var currentfeatureGroup = null;
+    var routeSuggestList = [];
+    var suggestBriefRouteList = [];
+    var groupRouteList = [];
+    var groupRoutes = [];
+    var selfGroupRoutes = [];
+    var $userInfoModalShowType = "byBtnClick";//InProcess state - byBtnClick state
+    //var suggestRoutesCache = [];
+    var $formSubmitBtn;
+    var $formSubmitBtnTxt;
+    var routeRequestJmodel = {
+        RouteId: '',
+        SrcGAddress: '',
+        SrcDetailAddress: '',
+        SrcLatitude: '',
+        SrcLongitude: '',
+        DstGAddress: '',
+        DstDetailAddress: '',
+        DstLatitude: '',
+        DstLongitude: '',
+        TimingOption: '',
+        TheTime: '',
+        TheDate: '',
+        SatDatetime: '',
+        SunDatetime: '',
+        MonDatetime: '',
+        TueDatetime: '',
+        WedDatetime: '',
+        ThuDatetime: '',
+        FriDatetime: '',
+        AccompanyCount: '',
+        IsDrive: '',
+        PayOption: '',
+        CostMinMax: '',
+        TimingString: '',
+        PricingString: ''
+    };
+    var routeResponseJmodel = {
+        RouteId: '',
+        SrcAddress: '',
+        SrcLatitude: '',
+        SrcLongitude: '',
+        DstAddress: '',
+        DstLatitude: '',
+        DstLongitude: '',
+        AccompanyCount: '',
+        IsDrive: '',
+        TimingString: '',
+        PricingString: '',
+        CarString: ''
+    };
+    var briefRouteJmodel = {
+        RouteId: '',
+        Name: '',
+        Family: '',
+        TimingString: '',
+        PricingString: '',
+        CarString: '',
+        SrcLatitude: '',
+        SrcLongitude: '',
+        SrcDistance: '',
+        DstLatitude: '',
+        DstLongitude: '',
+        DstDistance: ''
+    }
+    var userPersonalInfoJmodel = {
+        Gender: '',
+        Name: '',
+        Family: '',
+        Mobile: '',
+        Email: '',
+        NationalCode: '',
+        UserPic: '',
+        UserImageId: '',
+        IsUserPicUploaded: ''
+    };
+    var licenseInfoJmodel = {
+        LicenseNo: '',
+        LicensePic: '',
+        LicenseImageId:'',
+        IsLicensePicUploaded: ''
+    };
+    var bankInfoJmodel = {
+        BankName: '',
+        BankAccountNo: '',
+        BankCardNo: '',
+        IsBankCardPicUploaded: ''
+    };
+    var carInfoJmodel = {
+        CarType: '',
+        CarPlateNo: '',
+        CarColor: '',
+        CarFrontImageId: '',
+        CarBackImageId: '',
+        IsCarCardPicUploaded: ''
+    };
+    var groupAppointment = {
+        GroupId: '',
+        RouteId: '',
+        GAppointLatitude: '',
+        GAppointLongitude: '',
+        GAppointAddress: '',
+        AppointTime: '',
+        ConfirmedPrice: ''
+    }
+    var routeSuggestJmodel = {
+        RouteId: '',
+        SrcAddress: '',
+        SrcLatitude: '',
+        SrcLongitude: '',
+        DstAddress: '',
+        DstLatitude: '',
+        DstLongitude: '',
+        AccompanyCount: '',
+        IsDrive: '',
+        SelfRouteId: '',
+        SrcDistance: '',
+        DstDistance: '',
+        TimingString: '',
+        PricingString: '',
+        NameFamily: '',
+        Gender: '',
+        carInfo: ''
+    }
+    //------------------------------Setters & getters----------------
+    function getRouteTimingData() {
+        routeRequestJmodel.TimingOption = $('input[name=TimingOption]:checked', '#timingform').val();
+        routeRequestJmodel.TheTime = (routeRequestJmodel.TimingOption === timingOptionToday) ? $('#timepickertoday').val() : $('#timepickerspec').val();
+        routeRequestJmodel.TheTime = routeRequestJmodel.TheTime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.TheDate = getMiladiDateByShamsiDate($('#pdate').val());
+        routeRequestJmodel.SatDatetime = ($('#satchkbx').is(':checked')) ? $('#sattimepicker').val() : "";
+        routeRequestJmodel.SunDatetime = ($('#sunchkbx').is(':checked')) ? $('#suntimepicker').val() : "";
+        routeRequestJmodel.MonDatetime = ($('#monchkbx').is(':checked')) ? $('#montimepicker').val() : "";
+        routeRequestJmodel.TueDatetime = ($('#tuechkbx').is(':checked')) ? $('#tuetimepicker').val() : "";
+        routeRequestJmodel.WedDatetime = ($('#wedchkbx').is(':checked')) ? $('#wedtimepicker').val() : "";
+        routeRequestJmodel.ThuDatetime = ($('#thuchkbx').is(':checked')) ? $('#thutimepicker').val() : "";
+        routeRequestJmodel.FriDatetime = ($('#frichkbx').is(':checked')) ? $('#fritimepicker').val() : "";
+        routeRequestJmodel.SatDatetime = routeRequestJmodel.SatDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.SunDatetime = routeRequestJmodel.SunDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.MonDatetime = routeRequestJmodel.MonDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.TueDatetime = routeRequestJmodel.TueDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.WedDatetime = routeRequestJmodel.WedDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.ThuDatetime = routeRequestJmodel.ThuDatetime.replace($afternoon, "PM").replace($morning, "AM");
+        routeRequestJmodel.FriDatetime = routeRequestJmodel.FriDatetime.replace($afternoon, "PM").replace($morning, "AM");
+
+    }
+    function getRouteData() {
+        getRouteTimingData();
+        routeRequestJmodel.SrcGAddress = $('#srcAdd').find('.select2-chosen').text();
+        routeRequestJmodel.SrcDetailAddress = $('#sourceDetail').val();
+        var srclatlng = $('#srclatlng').val().split(",");
+        routeRequestJmodel.SrcLatitude = srclatlng[0];
+        routeRequestJmodel.SrcLongitude = srclatlng[1];
+        routeRequestJmodel.DstGAddress = $('#dstAdd').find('.select2-chosen').text();
+        routeRequestJmodel.DstDetailAddress = $('#destinationDetail').val();
+        var dstlatlng = $('#dstlatlng').val().split(",");
+        routeRequestJmodel.DstLatitude = dstlatlng[0];
+        routeRequestJmodel.DstLongitude = dstlatlng[1];
+        routeRequestJmodel.AccompanyCount = $('#AccompanyCount').val();
+        routeRequestJmodel.IsDrive = $('#IsDrive').val();
+        routeRequestJmodel.PayOption = $('input[name=CostOption]:checked', '#Costform').val();
+        routeRequestJmodel.CostMinMax = $('#MinMaxCost').val();
+    }
+    function setRouteData(model) {
+        $('#srcAdd').find('.select2-chosen').text(model.SrcGAddress);
+        $('#sourceDetail').text(model.SrcDetailAddress);
+        $('#dstAdd').find('.select2-chosen').text(model.DstGAddress);
+        $('#destinationDetail').text(model.DstDetailAddress);
+        routeRequestJmodel.TimingOption = $('input[name=TimingOption]:checked', '#timingform').val();
+        (model.TimingOption === timingOptionToday) ? $('#timepickertoday').val(model.TheTime) : $('#timepickerspec').val(model.TheTime);
+        $('#pdate').val(model.TheDate);
+        if (model.SatDatetime !== "") $('#satchkbx').is(':checked');
+        $('#sattimepicker').val(model.SatDatetime);
+        if (model.SunDatetime !== "") $('#sunchkbx').is(':checked');
+        $('#suntimepicker').val(model.SunDatetime);
+        if (model.MonDatetime !== "") $('#monchkbx').is(':checked');
+        $('#montimepicker').val(model.MonDatetime);
+        if (model.TueDatetime !== "") $('#tuechkbx').is(':checked');
+        $('#tuetimepicker').val(model.TueDatetime);
+        if (model.WedDatetime !== "") $('#wedchkbx').is(':checked');
+        $('#wedtimepicker').val(model.WedDatetime);
+        if (model.ThuDatetime !== "") $('#thuchkbx').is(':checked');
+        $('#thutimepicker').val(model.ThuDatetime);
+        if (model.FriDatetime !== "") $('#frichkbx').is(':checked');
+        $('#fritimepicker').val(model.FriDatetime);
+        $('#AccompanyCount').val(routeRequestJmodel.AccompanyCount);
+        routeRequestJmodel.PayOption = $('input[name=TimingOption]:checked', '#Costform').val();
+        $('#MinMaxCost').val(routeRequestJmodel.CostMinMax);
+    }
+    function getRouteResponseFromModel(model) {
+        routeResponseJmodel.RouteId = model.RouteId;
+        routeResponseJmodel.SrcAddress = model.SrcAddress;
+        routeResponseJmodel.SrcLatitude = model.SrcLatitude;
+        routeResponseJmodel.SrcLongitude = model.SrcLongitude;
+        routeResponseJmodel.DstAddress = model.DstAddress;
+        routeResponseJmodel.DstLatitude = model.DstLatitude;
+        routeResponseJmodel.DstLongitude = model.DstLongitude;
+        routeResponseJmodel.AccompanyCount = model.AccompanyCount;
+        routeResponseJmodel.IsDrive = model.IsDrive;
+        routeResponseJmodel.TimingString = model.TimingString;
+        routeResponseJmodel.PricingString = model.PricingString;
+        routeResponseJmodel.CarString = model.CarString;
+        routeResponseJmodel.GroupId = model.GroupId;
+        return routeResponseJmodel;
+    }
+    function getBriefRouteFromModel(gmodel) {
+        briefRouteJmodel.RouteId = gmodel.RouteId;
+        briefRouteJmodel.Name = gmodel.Name;
+        briefRouteJmodel.Family = gmodel.Family;
+        briefRouteJmodel.TimingString = gmodel.TimingString;
+        briefRouteJmodel.PricingString = gmodel.PricingString;
+        briefRouteJmodel.CarString = gmodel.CarString;
+        briefRouteJmodel.SrcDistance = gmodel.SrcDistance;
+        briefRouteJmodel.SrcLongitude = gmodel.SrcLongitude;
+        briefRouteJmodel.SrcLatitude = gmodel.SrcLatitude;
+        briefRouteJmodel.DstDistance = gmodel.DstDistance;
+        briefRouteJmodel.DstLatitude = gmodel.DstLatitude;
+        briefRouteJmodel.DstLongitude = gmodel.DstLongitude;
+        briefRouteJmodel.AccompanyCount = gmodel.AccompanyCount;
+        briefRouteJmodel.IsDrive = gmodel.IsDrive;
+        briefRouteJmodel.RgIsConfimed = gmodel.RgIsConfimed;
+        briefRouteJmodel.GroupId = gmodel.GroupId;
+        return briefRouteJmodel;
+    }
+    function getSuggestFromModel(model) {
+        routeSuggestJmodel.RouteId = model.SuggestRouteResponse.RouteId;
+        routeSuggestJmodel.SrcAddress = model.SuggestRouteResponse.SrcAddress;
+        routeSuggestJmodel.SrcLatitude = model.SuggestRouteResponse.SrcLatitude;
+        routeSuggestJmodel.SrcLongitude = model.SuggestRouteResponse.SrcLongitude;
+        routeSuggestJmodel.DstAddress = model.SuggestRouteResponse.DstAddress;
+        routeSuggestJmodel.DstLatitude = model.SuggestRouteResponse.DstLatitude;
+        routeSuggestJmodel.DstLongitude = model.SuggestRouteResponse.DstLongitude;
+        routeSuggestJmodel.AccompanyCount = model.SuggestRouteResponse.AccompanyCount;
+        routeSuggestJmodel.IsDrive = model.SuggestRouteResponse.IsDrive;
+        routeSuggestJmodel.SelfRouteId = model.SelfRouteResponse.RouteId;
+
+        routeSuggestJmodel.SrcDistance = model.SrcDistance;
+        routeSuggestJmodel.DstDistance = model.DstDistance;
+        routeSuggestJmodel.NameFamily = model.NameFamily;
+        routeSuggestJmodel.TimingString = model.TimingString;
+        routeSuggestJmodel.PricingString = model.PricingString;
+        return routeSuggestJmodel;
+    }
+    function getPersonalInfoFromUI() {
+        userPersonalInfoJmodel.Name = $('#Name').val();
+        userPersonalInfoJmodel.Family = $('#Family').val();
+        userPersonalInfoJmodel.NationalCode = $('#NationalCode').val();
+        userPersonalInfoJmodel.Gender = $('#Gender').val();
+        userPersonalInfoJmodel.Email = $('#Email').val();
+        userPersonalInfoJmodel.IsUserPicUploaded = $('#IsUserPicUploaded').val();
+    }
+    function setPersonalInfoToUI(userPersonalInfoJmodel) {
+        $('#Name').val(userPersonalInfoJmodel.Name);
+        $('#Family').val(userPersonalInfoJmodel.Family);
+        $('#Mobile').val(userPersonalInfoJmodel.Mobile);
+        $('#Email').val(userPersonalInfoJmodel.Email);
+        $('#NationalCode').val(userPersonalInfoJmodel.NationalCode);
+        $('#IsUserPicUploaded').val(userPersonalInfoJmodel.IsUserPicUploaded);
+        var genderString = '';
+        if (userPersonalInfoJmodel.Gender === "1") {
+            genderString = $man;
+        } else {
+            genderString = $woman;
+        }
+        if (userPersonalInfoJmodel.Family !== null) {
+            $('#NameFamily').text($hi + ' ' + genderString + ' ' + userPersonalInfoJmodel.Family);
+        }
+    }
+    function getLicenseInfoFromUI() {
+        licenseInfoJmodel.LicenseNo = $('#LicenseNo').val();
+        licenseInfoJmodel.IsLicensePicUploaded = $('#IsLicensePicUploaded').val();
+    }
+    function getBankInfoFromUI() {
+        bankInfoJmodel.BankName = $('#BankName').val();
+        bankInfoJmodel.BankAccountNo = $('#BankAccountNo').val();
+        bankInfoJmodel.BankCardNo = $('#BankCardNo').val();
+        bankInfoJmodel.IsBankCardPicUploaded = $('#IsBankCardPicUploaded').val();
+    }
+    function setBankInfoToUI(bankInfoJmodel) {
+        $('#BankName').val(bankInfoJmodel.BankName);
+        $('#BankAccountNo').val(bankInfoJmodel.BankAccountNo);
+        $('#BankCardNo').val(bankInfoJmodel.BankCardNo);
+        $('#IsBankCardPicUploaded').val(bankInfoJmodel.IsBankCardPicUploaded);
+    }
+    function setLicenseInfoToUI(licenseInfoJmodel) {
+        $('#LicenseNo').val(licenseInfoJmodel.LicenseNo);
+        $('#IsLicensePicUploaded').val(licenseInfoJmodel.IsLicensePicUploaded);
+    }
+    function getCarInfoFromUI() {
+        carInfoJmodel.CarType = $('#CarType').val();
+        carInfoJmodel.CarPlateNo = $('#CarPlateNo').val();
+        carInfoJmodel.CarColor = $('#CarColor').val();
+        carInfoJmodel.IsCarCardPicUploaded = $('#IsCarCardPicUploaded').val();
+    }
+    function setCarInfoToUI(carInfoJmodel) {
+        $('#CarType').val(carInfoJmodel.CarType);
+        $('#CarPlateNo').val(carInfoJmodel.CarPlateNo);
+        $('#CarColor').val(carInfoJmodel.CarColor);
+        $('#IsCarCardPicUploaded').val(carInfoJmodel.IsCarCardPicUploaded);
+    }
+    function getBankInfoFromServer() {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetBankInfo',
+            success: function (data) {
+                setBankInfoToUI(data);
+            }
+        });
+    }
+    function getPersonalInfoFromServer() {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetPersonalInfo',
+            success: function (data) {
+                setPersonalInfoToUI(data);
+            }
+        });
+    }
+    function getLicenseInfoFromServer() {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetLicenseInfo',
+            success: function (data) {
+                setLicenseInfoToUI(data);
+            }
+        });
+    }
+    function getCarInfoFromServer() {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetCarInfo',
+            success: function (data) {
+                setCarInfoToUI(data);
+            }
+        });
+    }
+    function getGroupAppointmentFromUi() {
+        groupAppointment.AppointTime = $('#appointtimepicker').val().replace($afternoon, "PM").replace($morning, "AM");
+        groupAppointment.GAppointAddress = $('#appointLocation').val();
+        groupAppointment.GAppointLatitude = $('#appointLocLatitude').val();
+        groupAppointment.GAppointLongitude = $('#appointLocLongitude').val();
+        groupAppointment.ConfirmedPrice = $('#confirmedPrice').val();
+        groupAppointment.GroupId = $('#appointGroupId').val();
+        groupAppointment.RouteId = $('#appointRouteId').val();
+    }
+    //---------------------helpers----------------------
+    function getMiladiDateByShamsiDate(shamsiDate) {
+        if (shamsiDate != null && shamsiDate !== "") {
+            var ss = shamsiDate.split("/");
+            var smDate = toGregorian(parseArabic(ss[0]), parseArabic(ss[1]), parseArabic(ss[2]));
+            var mDate = smDate.gy + '-' + smDate.gm + '-' + smDate.gd;
+            return mDate;
+        }
+        return null;
+    };
+    function parseArabic(str) {
+        return Number(str.replace(/[٠١٢٣٤٥٦٧٨٩]/g, function (d) {
+            return d.charCodeAt(0) - 1632;
+        }).replace(/[۰۱۲۳۴۵۶۷۸۹]/g, function (d) {
+            return d.charCodeAt(0) - 1776;
+        }));
+    }
+    function writeConfirmMessage(msg) {
+        $('#rId').val(msg[0]);
+        $('#confirmMessage').text(msg[1]);
+    }
+    function getBrief(text, len) {
+        var firstChar = (text.length - len) > 0 ? text.length - len : 0;
+        var res = text.substr(firstChar, text.length);
+        if (firstChar === 0) {
+            return res;
+        }
+        return "..." + res;
+    }
+    //----------------------register event listeners------------------
+    $('#pricing-btn').click(function (e) {
+        e.preventDefault();
+        getRouteData();
+        var $this = $(this);
+        //$formSubmitBtn = $this.find('.btn-submit');
+        $formSubmitBtnTxt = $this.text();
+        $this.text($pleasewait);
+        $.ajax({
+            type: 'POST',
+            url: '/app/RegisterRoute',
+            data: routeRequestJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    writeConfirmMessage(data.Messages);
+                    confirmRoute();
+                }
+                $this.text($formSubmitBtnTxt);
+            }
+        }).error(function (error) {
+            alert(error);
+        });
+    });
+    $('#confirmForm').submit(function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        $formSubmitBtn = $this.find('.btn-submit');
+        $formSubmitBtnTxt = $formSubmitBtn.text();
+        $formSubmitBtn.text($pleasewait);
+        $.ajax({
+            type: 'POST',
+            url: '/app/ConfirmRoute',
+            data: { Ids: $('#rId').val(), ConfirmedText: $('#confirmMessage').text() },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    routesMenu();
+                    $('#confirmModal').modal('hide');
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                }
+                $formSubmitBtn.text($formSubmitBtnTxt);
+            }
+        }).error(function (error) {
+            alert(error);
+            $formSubmitBtn.text($formSubmitBtnTxt);
+        });
+    });
+    $(document).on("click", "#my-info-btn,#my-info-btn2", function () {
+        $userInfoModalShowType = "byBtnClick";
+        $("#userModal").modal("show");
+        $(".navbar-collapse.in").collapse("hide");
+        return false;
+    });
+    $(document).on("click", ".previousStep", function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var modalId = $this.parents(".modal").prop("id");
+        showPreviousStep(modalId);
+        return false;
+    });
+    $("#address-btn").click(function (e) {
+        if ($("#dstlatlng").val() === "") {
+            showMessage.Error("", $dstClickonMap);
+        } else {
+            $("#timingModal").modal({ backdrop: 'static', keyboard: false });
+        }
+        return false;
+    });
+    $('#my-ways-btn,#my-ways-Item').click(function () {
+        routesMenu();
+    });
+    $(document).on("click", "#srcDstMenuItem,.newRoute", function () {
+        ResetRouteData();
+        newRouteMenu();
+        return false;
+    });
+    $('#srcDstItem').click(function () {
+        $('#address-container').show();
+    });
+    $("#howYes-btn").on("click", function (e) {
+        e.preventDefault();
+        $userInfoModalShowType = "InProcess";
+        $("#costTitle").text($hasCarPriceTitle);
+        $("#noMatterPrice").text($hasCarNoPrice);
+        $("#priceMinMax").text($hasCarMin);
+        $("#freePrice").text($hasCarFree);
+        $("#IsDrive").val(true);
+        $("#howModal").modal("hide");
+        if ($('#IsLicensePicUploaded').val() === "true" && $('#IsCarCardPicUploaded').val() === "true") {
+            $("#pricingModal").modal({ backdrop: 'static', keyboard: false });
+        }
+        if ($('#IsLicensePicUploaded').val() !== "true" || $('#IsCarCardPicUploaded').val() !== "true") {
+            $("#userModal").modal({ backdrop: 'static', keyboard: false });
+            setTimeout(function () {
+                showMessage.Warning("", $submitCarInfo);
+            }, 2000);
+
+        }
+        //if ($('#IsCarCardPicUploaded').val() !== "true") {
+        //    $("#userModal").modal({ backdrop: 'static', keyboard: false });
+        //    setTimeout(function () {
+        //        showMessage.Warning("", $submitCarLicense);
+        //    }, 2000);
+        //}
+    });
+    $("#howNo-btn").on("click", function (e) {
+        e.preventDefault();
+        $userInfoModalShowType = "InProcess";
+        $("#costTitle").text($noCarPriceTitle);
+        $("#noMatterPrice").text($noCarNoPrice);
+        $("#priceMinMax").text($noCarMin);
+        $("#freePrice").text($noCarFree);
+        $("#IsDrive").val(false);
+        $("#howModal").modal("hide");
+        if ($('#IsUserPicUploaded').val() === "true") {
+            $("#pricingModal").modal({ backdrop: 'static', keyboard: false });
+        } else {
+            $("#userModal").modal({ backdrop: 'static', keyboard: false });
+            setTimeout(function () {
+                showMessage.Warning("", $fillUserInfo);
+            }, 1500);
+        }
+    });
+    $(document).on('click','#exit',function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '/user/Exituser',
+            success: function (data) {
+                if (data.status === 'true') {
+                    var href = window.location.href;
+                    var main = href.replace('/app', '');
+                    window.location.replace(main);
+                }
+            }
+        }).error(function (error) {
+            alert(error);
+        });
+    });
+    //-------------------------jscript Functions------------------
+    function showPreviousStep(modalId) {
+        switch (modalId) {
+            case "pricingModal":
+                $("#pricingModal").modal("hide");
+                $("#howModal").modal("show");
+                break;
+            case "howModal":
+                $("#howModal").modal("hide");
+                $("#timingModal").modal("show");
+                break;
+            case "timingModal":
+                $("#timingModal").modal("hide");
+                break;
+        }
+    };
+    function confirmRoute() {
+        $("#pricingModal").modal("hide");
+        $("#confirmModal").modal({ backdrop: 'static', keyboard: false });
+    }
+    function routesMenu() {
+        showRightPanel();
+        hideLeftPanel();
+        hideNewRoute();
+        myRoutes();
+    }
+    function IsDriver(routeId) {
+        var is = false;
+        $.each(routeList, function (key, value) {
+            if (parseInt(value.RouteId) === parseInt(routeId)) {
+                if (value.IsDrive === true) {
+                    is = true;
+                    return false;
+                }
+            }
+        });
+        return is;
+    };
+    function hideRightPanel() {
+        if ($('#sidebar-right').is(':visible')) {
+            $('#sidebar-right').toggle();
+            map.invalidateSize();
+        }
+    }
+    function showRightPanel() {
+        if (!$('#sidebar-right').is(':visible')) {
+            $('#sidebar-right').toggle();
+            map.invalidateSize();
+        }
+    }
+    function hideLeftPanel() {
+        if ($('#sidebar-left').is(':visible')) {
+            $('#sidebar-left').toggle();
+            map.invalidateSize();
+        }
+    }
+    function showLeftPanel() {
+        if (!$('#sidebar-left').is(':visible')) {
+            $('#sidebar-left').toggle();
+            map.invalidateSize();
+        }
+    }
+    function ResetRouteData() {
+        resetMap();
+        $userInfoModalShowType = "byBtnClick";
+        hideRightPanel();
+        hideLeftPanel();
+
+    }
+    function resetMap() {
+        if (currentfeatureGroup !== null) {
+            removeLayerFromMap(currentfeatureGroup);
+        }
+        removeLayerFromMap(appointmentMarker);
+        removeLayerFromMap(sourceMarker);
+        removeLayerFromMap(destinationMarker);
+        currentGroupLayer.length = 0;
+    }
+    function showExtraMessages(data) {
+        if (data.Errors !== undefined && data.Errors !== null && data.Errors.length > 0) {
+            $.each(data.Errors, function (key, value) {
+                showMessage.Error("", value.Message);
+            });
+        }
+        if (data.Warnings !== undefined && data.Warnings !== null && data.Warnings.length > 0) {
+            $.each(data.Warnings, function (key, value) {
+                showMessage.Warning("", value.Message);
+            });
+        }
+        if (data.Infos !== undefined && data.Infos !== null && data.Infos.length > 0) {
+            $.each(data.Infos, function (key, value) {
+                showMessage.Info("", value.Message);
+            });
+        }
+    }
+
+    //---------------------------call functions---------------------
+    hideRightPanel();
+    hideLeftPanel();
+    getLicenseInfoFromServer();
+    getCarInfoFromServer();
+    getPersonalInfoFromServer();
+    getBankInfoFromServer();
+    initializeNewRoute();
+</script>

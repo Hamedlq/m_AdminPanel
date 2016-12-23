@@ -1,0 +1,533 @@
+﻿<script type="text/javascript">
+    $(document).on("click", "#users-info-btn", function () {
+        showRightPanel();
+        hideLeftPanel();
+        allUsers();
+        //        $userInfoModalShowType = "byBtnClick";
+        //        $("#userModal").modal("show");
+        //        $(".navbar-collapse.in").collapse("hide");
+        return false;
+    });
+    $(document).on("click", "#users-search-btn", function () {
+        hideRightPanel();
+        hideLeftPanel();
+        $("#userSearchModal").modal("show");
+        return false;
+    });
+    $(document).on("click", "#user_search", function () {
+        var mobile = $('#UserMobileSearch').val();
+        var name = $('#UserNameSearch').val();
+        var family = $('#UserFamilySearch').val();
+        findUsers(mobile,name,family);
+        return false;
+    });
+    $(document).on("click", ".userInfo", function () {
+        var mobileNo = $(this).attr("id");
+        $userMobileNo = mobileNo;
+        getPersonalInfoFromServer(mobileNo);
+        getLicenseInfoFromServer(mobileNo);
+        getCarInfoFromServer(mobileNo);
+        getUserRoutes(mobileNo);
+        setInterval((function a(){refreshChats($userMobileNo);}), 5000);
+        $("#userModal").modal("show");
+        return false;
+    });
+    $(document).on("click", "#userSendMessage", function () {
+        $("#chatModal").modal("show");
+        return false;
+    });
+    $(document).on("click", "#userRoutes", function () {
+        showRightPanel();
+        return false;
+    });
+
+    $('#users-ways-btn').click(function () {
+        adminRoutesMenu();
+    });
+    function adminRoutesMenu() {
+        showRightPanel();
+        hideLeftPanel();
+        hideNewRoute();
+        allRoutes();
+    }
+    function findUsers(mobile, name, family) {
+        $.ajax({
+            type: 'POST',
+            url: '/user/GetUserByInfo',
+            data: { Mobile: mobile,Name:name,Family:family},
+            success: function (data) {
+                $("#userTable tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    var uvalue = JSON.parse(value);
+                    var gen;
+                    if (uvalue.Gender === '2') {
+                        gen = $woman;
+                    } else {
+                        gen = $man;
+                    }
+                    var record = '<tr class="userInfo" id="' + uvalue.Mobile + '"><td>' + gen + '</td><td>' + uvalue.Mobile + '</td><td>' + uvalue.Name + '</td><td>' + uvalue.Family + '</td><td>' + uvalue.NationalCode + '</td></tr>';
+                    $("#userTable tbody").append(record);
+                });
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function allRoutes() {
+        var routeJmodel;
+        var routeCount = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/app/getAllRoutes',
+            success: function (data) {
+                routeList.length = 0;
+                groupRouteList.length = 0;
+                groupRoutes.length = 0;
+                $("#feature-list tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    routeCount++;
+                    var routeVals = JSON.parse(value);
+                    var routeJmodel = getRouteResponseFromModel(routeVals);
+                    routeList.push({
+                        RouteId: routeJmodel.RouteId,
+                        SrcAddress: routeJmodel.SrcAddress,
+                        SrcLatitude: routeJmodel.SrcLatitude,
+                        SrcLongitude: routeJmodel.SrcLongitude,
+                        DstAddress: routeJmodel.DstAddress,
+                        DstLatitude: routeJmodel.DstLatitude,
+                        DstLongitude: routeJmodel.DstLongitude,
+                        TimingString: routeJmodel.TimingString,
+                        PricingString: routeJmodel.PricingString,
+                        CarString: routeJmodel.CarString,
+                        AccompanyCount: routeJmodel.AccompanyCount,
+                        GroupId: routeJmodel.GroupId,
+                        IsDrive: routeJmodel.IsDrive
+                    });
+                    var gCounter = routeJmodel.AccompanyCount;
+                    var selfGroupId = 0;
+                    var grecord = '';
+                    $.each(routeVals.GroupRoutes, function (gkey, gvalue) {
+                        var groupRouteModel = getBriefRouteFromModel(gvalue);
+                        selfGroupRoutes.push({
+                            RouteId: groupRouteModel.RouteId
+                        });
+                        groupRouteList.push({
+                            RouteId: groupRouteModel.RouteId,
+                            Name: groupRouteModel.Name,
+                            Family: groupRouteModel.Family,
+                            SrcLatitude: groupRouteModel.SrcLatitude,
+                            SrcLongitude: groupRouteModel.SrcLongitude,
+                            DstLatitude: groupRouteModel.DstLatitude,
+                            DstLongitude: groupRouteModel.DstLongitude,
+                            TimingString: groupRouteModel.TimingString,
+                            PricingString: groupRouteModel.PricingString,
+                            AccompanyCount: groupRouteModel.AccompanyCount,
+                            GroupId: groupRouteModel.GroupId,
+                            IsDrive: groupRouteModel.IsDrive,
+                            CarString: groupRouteModel.CarString,
+                            RgIsConfimed: groupRouteModel.RgIsConfimed
+                        });
+                        var imgColorBlock = '';
+                        if (groupRouteModel.IsDrive === true) {
+                            imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                        } else {
+                            imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(gCounter) + '">&nbsp;</span>';
+                        }
+                        grecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup routeGroup">' +
+                            imgColorBlock + '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                        if (groupRouteModel.RgIsConfimed === true) {
+                            grecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                        } else {
+                            grecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                        }
+                        gCounter += 1;
+                        gCounter += groupRouteModel.AccompanyCount;
+                        selfGroupId = groupRouteModel.GroupId;
+                    });
+                    for (var i = gCounter; i < 4; i++) {
+                        grecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                    }
+                    //grecord += '</div>';
+                    if (gCounter - routeJmodel.AccompanyCount > 0) {
+                        grecord += '<div><div class="spacer-5">' +
+                            '</div><button class="btn btn-xs btn-success appointmentBtn" type="button"><i class="fa fa fa-group"></i>&nbsp;' + $appointment + '</button>';
+                        grecord += '<button class="btn btn-xs btn-danger pull-left leaveGroupBtn" type="button"><i class="fa fa fa-sign-out"></i>&nbsp;' + $exitGroup + '</button></div>';
+                    }
+                    var sgrecord = '';
+                    $.each(routeVals.SuggestGroups, function (sgkey, sgvalue) {
+                        var sgCounter = 0;
+
+                        sgrecord += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>' + $suggestedRideShareGroup + '</h3></header><div class="faq-content clearfix">';
+                        sgrecord += '<div><button id="grj' + sgvalue.GroupId + '" class="btn btn-xs btn-success joinGroup" type="button"><i class="fa fa-user"></i>&nbsp;' + $joinGroup + '</button>' +
+                            '<button id="grd' + sgvalue.GroupId + '" class="btn btn-xs btn-danger pull-left deleteSuggestGroup" type="button">&nbsp;' + $deleteSuggestion + '<i class="fa fa-times"></i></button></div>' +
+                            '<div class="spacer-10"></div>' +
+                            '<div id="gr' + sgvalue.GroupId + '" class="groupId">';
+                        $.each(sgvalue.GroupMembers, function (gmkey, gmvalue) {
+                            var groupRouteModel = getBriefRouteFromModel(gmvalue);
+                            groupRoutes.push({
+                                RouteId: groupRouteModel.RouteId,
+                                sgvalue: sgvalue.GroupId
+                            });
+                            groupRouteList.push({
+                                RouteId: groupRouteModel.RouteId,
+                                Name: groupRouteModel.Name,
+                                Family: groupRouteModel.Family,
+                                SrcLatitude: groupRouteModel.SrcLatitude,
+                                SrcLongitude: groupRouteModel.SrcLongitude,
+                                DstLatitude: groupRouteModel.DstLatitude,
+                                DstLongitude: groupRouteModel.DstLongitude,
+                                TimingString: groupRouteModel.TimingString,
+                                PricingString: groupRouteModel.PricingString,
+                                AccompanyCount: groupRouteModel.AccompanyCount,
+                                IsDrive: groupRouteModel.IsDrive,
+                                CarString: groupRouteModel.CarString,
+                                GroupId: groupRouteModel.GroupId,
+                                RgIsConfimed: groupRouteModel.RgIsConfimed
+                            });
+                            var imgColorBlock = '';
+                            if (gmvalue.IsDrive === true) {
+                                imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                            } else {
+                                imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(sgCounter) + '">&nbsp;</span>';
+                            }
+                            sgrecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup suggestGroup">' +
+                                imgColorBlock +
+                                '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                            if (groupRouteModel.RgIsConfimed === true) {
+                                sgrecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                            } else {
+                                sgrecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                            }
+                            sgCounter += groupRouteModel.AccompanyCount;
+                            sgCounter += 1;
+                        });
+                        for (var i = sgCounter; i < 4; i++) {
+                            sgrecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                        }
+                        sgrecord += '</div><div class="spacer-10"></div></article></div>';
+                    });
+                    var src = routeJmodel.SrcAddress;
+                    var dst = routeJmodel.DstAddress;
+                    var record = '<tr class="feature-row" id="' + routeJmodel.RouteId + '"><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                        '<div class="pull-right"><h5>' + getBrief(routeJmodel.TimingString, 19) + '&nbsp;</h5></div>' +
+                        '<div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+                        '<div><button class="btn btn-xs btn-info" type="button"><i class="fa fa-road"></i></button>' +
+                        '<button class="btn btn-xs btn-danger pull-left deleteRoute" type="button">&nbsp;' + $deleteRoute + '<i class="fa fa-times"></i></button></div>' +
+                        '<div><i class="fa fa-send"></i>&nbsp;&nbsp;' + getBrief(src, 35) + '</div>' +
+                        '<div><i class="fa fa-cab fa-send-o"></i>&nbsp;&nbsp;' + getBrief(dst, 35) + '</div>' +
+                        '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + routeJmodel.TimingString + '</div>' +
+                        '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + routeJmodel.PricingString + '</div>';
+                    if (routeJmodel.IsDrive === true) {
+                        record += '<div><i class="fa fa-cab"></i>&nbsp;&nbsp;' + routeJmodel.CarString + '</div>';
+                    }
+                    if (routeJmodel.AccompanyCount > 0) {
+                        record += '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + routeJmodel.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div>';
+                    }
+                    if (grecord !== '') {
+                        record += '<div><b>' + $rideShareGroup + '</b></div>';
+                        record += '<div class="groupId" id="gr' + selfGroupId + '">';
+                        record += grecord;
+                        record += '</div>';
+                    }
+                    record += '<div class="spacer-5"></div><hr>';
+                    if (sgrecord !== '') {
+                        //record += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>'+$suggestedRideShareGroup+'</h3></header><div class="faq-content clearfix">';
+                        record += sgrecord;
+                        //record += '<div class="spacer-10"></div></article></div>';
+                    }
+                    record += '</div></td></tr>';
+                    $("#feature-list tbody").append(record);
+                });
+                if (routeCount === 0) {
+                    var notRoute = '<tr><td style="vertical-align: middle;"><div class="box"><div class="notFound">' + $noRouteFound + '</div>' +
+                        '<div class="notFound"><a class="newRoute">' + $submitNewRoute + '</a></div></div></td></tr>';
+                    $("#feature-list tbody").append(notRoute);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function getRouteUser(id) {
+        showLeftPanel();
+        var suggestCount = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/app/GetRouteUser',
+            data: { routeId: id },
+            success: function (data) {
+                var gen;
+                if (data.Gender == '2') {
+                    gen = $woman;
+                } else {
+                    gen = $man;
+                }
+                var record = '<tr class="routeuser" ><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                    '<div class="pull-right"><h5>' + data.Name + ' ' + data.Family + '</h5></div><div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+                    '<div class="pull-left"><img src="/user/RouteUserImage/' + id + '" class="avatar" alt="' + $picture + '"></div>' +
+                    '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + data.Name + ' ' + data.Family + '</b></div>' +
+                    '<div><i class="fa fa-venus-mars"></i>&nbsp;&nbsp;' + gen + '</div>' +
+                    '<div><i class="fa fa-file-o"></i>&nbsp;&nbsp;' + data.Email + '</div>' +
+                    '<div><i class="fa fa-mobile"></i>&nbsp;&nbsp;' + data.Mobile + '</div>';
+                record += '</div></td></tr>';
+                $("#route-list tbody").append(record);
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function allUsers() {
+        $.ajax({
+            type: 'POST',
+            url: '/user/getAllUsers',
+            success: function (data) {
+                $("#feature-list tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    var uvalue = JSON.parse(value);
+                    //                    $.each(user, function (ukey, uvalue) {
+                    var gen;
+                    if (uvalue.Gender === '2') {
+                        gen = $woman;
+                    } else {
+                        gen = $man;
+                    }
+                    var record = '<tr class="userInfo" id="' + uvalue.Mobile + '" ><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                        '<div class="pull-right"><h5>' + uvalue.Name + ' ' + uvalue.Family + '</h5></div><div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+//                            '<div class="pull-left"><img src="/user/RouteUserImage/' + id + '" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + uvalue.Name + ' ' + uvalue.Family + '</b></div>' +
+                        '<div><i class="fa fa-venus-mars"></i>&nbsp;&nbsp;' + gen + '</div>' +
+                        '<div><i class="fa fa-file-o"></i>&nbsp;&nbsp;' + uvalue.Email + '</div>' +
+                        '<div><i class="fa fa-mobile"></i>&nbsp;&nbsp;' + uvalue.Mobile + '</div>';
+                    record += '</div></td></tr>';
+                    $("#feature-list tbody").append(record);
+                    //                    });
+                });
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function getPersonalInfoFromServer(mobileNo) {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetUserPersonalInfo',
+            data: { Mobile: mobileNo },
+            success: function (data) {
+                setPersonalInfoToUI(data);
+                $('#UserPic').attr('src', '../user/GetImageById/' + data.UserImageId);
+/*                $('#UserPic').fileinput({
+                    initialPreview: ['<img src="../user/GetImageById/"' + data.UserImageId + '"" class="file-preview-image" alt="' + $yourPic + '" >']
+                });*/
+
+            }
+        });
+    }
+    function getLicenseInfoFromServer(mobileNo) {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetUserLicenseInfo',
+            data: { Mobile: mobileNo },
+            success: function (data) {
+                setLicenseInfoToUI(data);
+                $('#LicensePic').attr('src', '../user/GetImageById/' + data.LicenseImageId);
+            }
+        });
+    }
+    function getCarInfoFromServer(mobileNo) {
+        $.ajax({
+            type: 'POST',
+            url: '../user/GetUserCarInfo',
+            data: { Mobile: mobileNo },
+            success: function (data) {
+                setCarInfoToUI(data);
+                $('#CarCardPic').attr('src', '../user/GetImageById/' + data.CarBackImageId);
+                $('#CarCardBPic').attr('src', '../user/GetImageById/' + data.CarFrontImageId);
+/*                $('#CarCardPic').fileinput({
+                    initialPreview: [
+                        '<img src="../user/GetImageById/"' + data.CarBackImageId + '"" class="file-preview-image" alt="' + $CarCard + '" >',
+                        '<img src="../user/GetImageById/"' + data.CarFrontImageId + '"" class="file-preview-image" alt="' + $CarCardBack + '" >'
+                    ]
+                });*/
+            }
+        });
+    }
+
+    function getUserRoutes(mobileNo) {
+        var routeCount = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/app/GetUserRoutes',
+            data: { Mobile: mobileNo },
+            success: function (data) {
+                routeList.length = 0;
+                groupRouteList.length = 0;
+                groupRoutes.length = 0;
+                $("#feature-list tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    routeCount++;
+                    var routeVals = JSON.parse(value);
+                    var routeJmodel = getRouteResponseFromModel(routeVals);
+                    routeList.push({
+                        RouteId: routeJmodel.RouteId,
+                        SrcAddress: routeJmodel.SrcAddress,
+                        SrcLatitude: routeJmodel.SrcLatitude,
+                        SrcLongitude: routeJmodel.SrcLongitude,
+                        DstAddress: routeJmodel.DstAddress,
+                        DstLatitude: routeJmodel.DstLatitude,
+                        DstLongitude: routeJmodel.DstLongitude,
+                        TimingString: routeJmodel.TimingString,
+                        PricingString: routeJmodel.PricingString,
+                        CarString: routeJmodel.CarString,
+                        AccompanyCount: routeJmodel.AccompanyCount,
+                        GroupId: routeJmodel.GroupId,
+                        IsDrive: routeJmodel.IsDrive
+                    });
+                    var gCounter = routeJmodel.AccompanyCount;
+                    var selfGroupId = 0;
+                    var grecord = '';
+                    $.each(routeVals.GroupRoutes, function (gkey, gvalue) {
+                        var groupRouteModel = getBriefRouteFromModel(gvalue);
+                        selfGroupRoutes.push({
+                            RouteId: groupRouteModel.RouteId
+                        });
+                        groupRouteList.push({
+                            RouteId: groupRouteModel.RouteId,
+                            Name: groupRouteModel.Name,
+                            Family: groupRouteModel.Family,
+                            SrcLatitude: groupRouteModel.SrcLatitude,
+                            SrcLongitude: groupRouteModel.SrcLongitude,
+                            DstLatitude: groupRouteModel.DstLatitude,
+                            DstLongitude: groupRouteModel.DstLongitude,
+                            TimingString: groupRouteModel.TimingString,
+                            PricingString: groupRouteModel.PricingString,
+                            AccompanyCount: groupRouteModel.AccompanyCount,
+                            GroupId: groupRouteModel.GroupId,
+                            IsDrive: groupRouteModel.IsDrive,
+                            CarString: groupRouteModel.CarString,
+                            RgIsConfimed: groupRouteModel.RgIsConfimed
+                        });
+                        var imgColorBlock = '';
+                        if (groupRouteModel.IsDrive === true) {
+                            imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                        } else {
+                            imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(gCounter) + '">&nbsp;</span>';
+                        }
+                        grecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup routeGroup">' +
+                            imgColorBlock + '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                        if (groupRouteModel.RgIsConfimed === true) {
+                            grecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                        } else {
+                            grecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                        }
+                        gCounter += 1;
+                        gCounter += groupRouteModel.AccompanyCount;
+                        selfGroupId = groupRouteModel.GroupId;
+                    });
+                    for (var i = gCounter; i < 4; i++) {
+                        grecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                    }
+                    //grecord += '</div>';
+                    if (gCounter - routeJmodel.AccompanyCount > 0) {
+                        grecord += '<div><div class="spacer-5">' +
+                            '</div><button class="btn btn-xs btn-success appointmentBtn" type="button"><i class="fa fa fa-group"></i>&nbsp;' + $appointment + '</button>';
+                        grecord += '<button class="btn btn-xs btn-danger pull-left leaveGroupBtn" type="button"><i class="fa fa fa-sign-out"></i>&nbsp;' + $exitGroup + '</button></div>';
+                    }
+                    var sgrecord = '';
+                    $.each(routeVals.SuggestGroups, function (sgkey, sgvalue) {
+                        var sgCounter = 0;
+
+                        sgrecord += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>' + $suggestedRideShareGroup + '</h3></header><div class="faq-content clearfix">';
+                        sgrecord += '<div><button id="grj' + sgvalue.GroupId + '" class="btn btn-xs btn-success joinGroup" type="button"><i class="fa fa-user"></i>&nbsp;' + $joinGroup + '</button>' +
+                            '<button id="grd' + sgvalue.GroupId + '" class="btn btn-xs btn-danger pull-left deleteSuggestGroup" type="button">&nbsp;' + $deleteSuggestion + '<i class="fa fa-times"></i></button></div>' +
+                            '<div class="spacer-10"></div>' +
+                            '<div id="gr' + sgvalue.GroupId + '" class="groupId">';
+                        $.each(sgvalue.GroupMembers, function (gmkey, gmvalue) {
+                            var groupRouteModel = getBriefRouteFromModel(gmvalue);
+                            groupRoutes.push({
+                                RouteId: groupRouteModel.RouteId,
+                                sgvalue: sgvalue.GroupId
+                            });
+                            groupRouteList.push({
+                                RouteId: groupRouteModel.RouteId,
+                                Name: groupRouteModel.Name,
+                                Family: groupRouteModel.Family,
+                                SrcLatitude: groupRouteModel.SrcLatitude,
+                                SrcLongitude: groupRouteModel.SrcLongitude,
+                                DstLatitude: groupRouteModel.DstLatitude,
+                                DstLongitude: groupRouteModel.DstLongitude,
+                                TimingString: groupRouteModel.TimingString,
+                                PricingString: groupRouteModel.PricingString,
+                                AccompanyCount: groupRouteModel.AccompanyCount,
+                                IsDrive: groupRouteModel.IsDrive,
+                                CarString: groupRouteModel.CarString,
+                                GroupId: groupRouteModel.GroupId,
+                                RgIsConfimed: groupRouteModel.RgIsConfimed
+                            });
+                            var imgColorBlock = '';
+                            if (gmvalue.IsDrive === true) {
+                                imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                            } else {
+                                imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(sgCounter) + '">&nbsp;</span>';
+                            }
+                            sgrecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup suggestGroup">' +
+                                imgColorBlock +
+                                '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                            if (groupRouteModel.RgIsConfimed === true) {
+                                sgrecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                            } else {
+                                sgrecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                            }
+                            sgCounter += groupRouteModel.AccompanyCount;
+                            sgCounter += 1;
+                        });
+                        for (var i = sgCounter; i < 4; i++) {
+                            sgrecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                        }
+                        sgrecord += '</div><div class="spacer-10"></div></article></div>';
+                    });
+                    var src = routeJmodel.SrcAddress;
+                    var dst = routeJmodel.DstAddress;
+                    var record = '<tr class="feature-row" id="' + routeJmodel.RouteId + '"><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                        '<div class="pull-right"><h5>' + getBrief(routeJmodel.TimingString, 19) + '&nbsp;</h5></div>' +
+                        '<div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+                        '<div><button class="btn btn-xs btn-info" type="button"><i class="fa fa-road"></i></button>' +
+                        '<button class="btn btn-xs btn-danger pull-left deleteRoute" type="button">&nbsp;' + $deleteRoute + '<i class="fa fa-times"></i></button></div>' +
+                        '<div><i class="fa fa-send"></i>&nbsp;&nbsp;' + getBrief(src, 35) + '</div>' +
+                        '<div><i class="fa fa-cab fa-send-o"></i>&nbsp;&nbsp;' + getBrief(dst, 35) + '</div>' +
+                        '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + routeJmodel.TimingString + '</div>' +
+                        '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + routeJmodel.PricingString + '</div>';
+                    if (routeJmodel.IsDrive === true) {
+                        record += '<div><i class="fa fa-cab"></i>&nbsp;&nbsp;' + routeJmodel.CarString + '</div>';
+                    }
+                    if (routeJmodel.AccompanyCount > 0) {
+                        record += '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + routeJmodel.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div>';
+                    }
+                    if (grecord !== '') {
+                        record += '<div><b>' + $rideShareGroup + '</b></div>';
+                        record += '<div class="groupId" id="gr' + selfGroupId + '">';
+                        record += grecord;
+                        record += '</div>';
+                    }
+                    record += '<div class="spacer-5"></div><hr>';
+                    if (sgrecord !== '') {
+                        //record += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>'+$suggestedRideShareGroup+'</h3></header><div class="faq-content clearfix">';
+                        record += sgrecord;
+                        //record += '<div class="spacer-10"></div></article></div>';
+                    }
+                    record += '</div></td></tr>';
+                    $("#feature-list tbody").append(record);
+                });
+                if (routeCount === 0) {
+                    var notRoute = '<tr><td style="vertical-align: middle;"><div class="box"><div class="notFound">' + $noRouteFound + '</div>' +
+                        '<div class="notFound"><a class="newRoute">' + $submitNewRoute + '</a></div></div></td></tr>';
+                    $("#feature-list tbody").append(notRoute);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+
+
+
+</script>

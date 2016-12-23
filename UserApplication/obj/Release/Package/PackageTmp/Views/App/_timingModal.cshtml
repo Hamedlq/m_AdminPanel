@@ -1,0 +1,144 @@
+﻿@using ServiceLayer.Models
+<div class="modal fade direction-rtl" id="timingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-left" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">چه وقتایی میخای این مسیرو بری؟</h4>
+            </div>
+            <div class="modal-button">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">نمیخام برم</button>
+                <button type="button" class="btn btn-default previousStep pull-left" data-dismiss="modal">مرحله قبل</button>
+                <button type="submit" id="timing-btn" class="btn btn-primary">ثبت زمان</button>
+            </div>
+            <div class="alert-wrap"></div>
+            <div class="modal-body">
+                <form id="timingform">
+                    <fieldset>
+                        @*<div class="form-group">
+                            <div class="col-md-12 pull-right">
+                                <label><input type="radio" name="TimingOption" value="@TimingOptions.Now" checked /><span></span>همین الان</label>
+                            </div>
+                            <div class="hr-totop"></div>
+                        </div>*@
+                        <div class="form-group">
+                            <div class="col-md-12 pull-right">
+                                <label>
+                                    <input type="radio" name="TimingOption" value="@TimingOptions.Today" /><span></span> امروز ساعت
+                                    <div class="input-group bootstrap-timepicker direction-ltr" style="width:180px">
+                                        <input id="timepickertoday" type="text" class="form-control direction-rtl">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                    </div>
+
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="hr-totop"></div>
+                            <div class="col-md-12 pull-right">
+                                <label><input type="radio" name="TimingOption" value="@TimingOptions.InDateAndTime" /><span></span>در این تاریخ و ساعت</label><br />
+                                <div class="col-md-6 pull-right">
+                                    <label> تاریخ</label>
+                                    <div class="input-group date direction-ltr" data-mddatetimepicker="true" data-targetselector="#pdate" data-trigger="click" data-placement="top">
+                                        <input id="pdate" class="form-control direction-rtl" type="text" disabled />
+                                        <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 pull-right">
+                                    <label>ساعت</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <input id="timepickerspec" type="text" class="form-control direction-rtl">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="spacer-10"></div>
+                            <div class="hr-totop"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12 pull-right">
+                                <label><input type="radio" name="TimingOption" value="@TimingOptions.Weekly"/><span></span>هر هفته این مسیرو میرم(هر هفته تکرار می شود)</label></br>
+                                @*<div class="col-md-12">
+                                    <div class="input-group"><input type="checkbox" name="repeatWeakly" id="repeatWeakly" />هر هفته تکرار می شود</div>
+                                </div>*@
+                                <div class="col-md-4 pull-right">
+                                    <label>شنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="sattimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="satchkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>یکشنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="suntimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="sunchkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>دوشنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="montimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="monchkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>سه شنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="tuetimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="tuechkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>چهارشنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="wedtimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="wedchkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>پنج شنبه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="thutimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="thuchkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <label>جمعه</label>
+                                    <div class="input-group bootstrap-timepicker direction-ltr">
+                                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                        <input id="fritimepicker" class="form-control direction-rtl" type="text" />
+                                        <span class="input-group-addon">
+                                            <label><input type="checkbox" id="frichkbx" /><span></span></label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

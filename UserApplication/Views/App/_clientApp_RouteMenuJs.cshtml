@@ -1,0 +1,631 @@
+﻿<script type="text/javascript">
+    //-----------------------Variables------------------------------------
+    var currentgroupId = 0;
+
+    //----------------------register event listeners----------------------
+    $(document).on("click", ".appointmentBtn", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var routeId = $(this).parents(".feature-row").attr("id");
+        var groupId = $(this).parents(".groupId").attr("id").replace("gr", "");
+        $("#appointGroupId").val(groupId);
+        $("#appointRouteId").val(routeId);
+        getPaymentMessage(routeId, groupId);
+        if (IsDriver(routeId) === true) {
+            $("#appointConfirm").text($finalConfirm);
+            enableFields();
+        } else if (IsDriver(routeId) === false) {
+            $("#appointConfirm").text($finalConfirmAndPay);
+            disableFields();
+        }
+        $("#appointmentModal").modal("show");
+        refreshComments(groupId);
+    });
+    $(document).on("click", ".feature-row", function (e) {
+        var id = $(this).attr("id");
+        suggestRoutes(id);
+        disableShowedRouteGroup();
+        resetMap();
+        routeList.forEach(function (entry) {
+            if (entry.RouteId == id) {
+                var srclatlng = L.latLng(entry.SrcLatitude, entry.SrcLongitude);
+                sourceMarker = new L.Marker(srclatlng, { icon: IconSrc });
+                map.addLayer(sourceMarker);
+                var dstlatlng = L.latLng(entry.DstLatitude, entry.DstLongitude);
+                destinationMarker = new L.Marker(dstlatlng, { icon: IconDst });
+                map.addLayer(destinationMarker);
+                currentfeatureGroup = new L.featureGroup([sourceMarker, destinationMarker]);
+                map.fitBounds(currentfeatureGroup.getBounds(), { padding: [50, 50] });
+            }
+        });
+    });
+    $(document).on("click", ".suggestRow", function (e) {
+        var id = $(this).attr("id");
+        removeSuggestMarkers();
+        //removeSuggestSrcMarker();
+        //removeSuggestDstMarker();
+        var suggestRoute;
+        $.each(routeList, function(key, value) {
+            if (parseInt(value.RouteId) === parseInt(id)) {
+                setSuggestMapMarker(value);
+            }
+        });
+        //suggestBriefRouteList.forEach(function (entry) {
+        //    if (parseInt(entry.RouteId) === parseInt(id)) {
+        //        suggestRoute = entry;
+        //        setSuggestMapMarker(suggestRoute);
+        //    }
+        //});
+    });
+    $(document).on("click", ".accept", function (e) {
+        e.preventDefault();
+        var id = $(this).parents(".suggestRow").attr("id");
+        var selfid = $(this).parents(".suggestRow").attr("selfid");
+        accceptSuggestion(id, selfid);
+    });
+    $(document).on("click", ".deleteRoute", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        resetMap();
+        var id = $(this).parents(".feature-row").attr("id");
+        //if (selfGroupRoutes.length > 0) {
+        $('#deleteConfirmationRouteId').val(id);
+        $('#deleteConfirmModal').modal('show');
+        //} else {
+        //    deleteRoute(id);
+        //}
+
+    });
+    $(document).on("click", "#deleteConfirmYes", function (e) {
+        var id = $('#deleteConfirmationRouteId').val();
+        deleteRoute(id);
+    });
+
+    //$(document).on("click", ".choose", function (e) {
+    //    suggestRoutes(id);
+    //});
+    $(document).on("click", ".joinGroup", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        resetMap();
+        var routeId = $(this).parents(".feature-row").attr("id");
+        var groupId = $(this).attr("id").replace("grj", "");
+        joinGroup(groupId, routeId);
+    });
+    $(document).on("click", ".deleteSuggestGroup", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        resetMap();
+        var routeId = $(this).parents(".feature-row").attr("id");
+        var groupId = $(this).attr("id").replace("grd", "");
+        deleteGroupSuggest(groupId, routeId);
+    });
+    $(document).on("click", ".deleteRouteSuggest", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var routeId = $(this).parents(".feature-row").attr("id");
+        var selfRouteId = $(this).parents(".feature-row").attr("selfid");
+        deleteRouteSuggest(selfRouteId, routeId);
+    });
+    $(document).on("click", ".leaveGroupBtn", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        resetMap();
+        var groupId = $(this).parents(".groupId").attr("id").replace("gr", "");
+        var routeId = $(this).parents(".feature-row").attr("id");
+        leaveGroup(groupId, routeId);
+    });
+    $(document).on("click", ".routeGroup", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        removeSuggestMarkers();
+        toggleRouteGroup($(this));
+        var groupIdstr = $(this).parent(".groupId").attr("id");
+        showGrouponMap(groupIdstr);
+        //var id = $(this).attr("id");
+        //var color = $(this).children(".colorCls").attr("class").replace('color-label', '').replace('colorCls', '').replace(' ', '');
+        //var groupId = $(this).parent(".groupId").attr("id").replace("gr", "");
+        //setGroupRouteMapMarker(id, color, groupId);
+    });
+    $(document).on("click", ".suggestGroup", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        removeSuggestMarkers();
+        toggleRouteGroup($(this));
+        var groupIdstr = $(this).parent(".groupId").attr("id");
+        showGrouponMap(groupIdstr);
+    });
+
+    //----------------------jscript Functions-----------------------------
+    function disableShowedRouteGroup() {
+        var showds = $('.showed');
+        $.each(showds, function (key, value) {
+            $("#" + value.id).removeClass('showed');
+//            value.removeClass('showed');
+        });
+    }
+    function removeSuggestMarkers() {
+        removeLayerFromMap(srcSuggestMarker);
+        removeLayerFromMap(dstSuggestMarker);
+    }
+    function deleteGroupSuggest(groupId, routeId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/deleteGroupSuggest',
+            data: { GroupId: groupId, RouteId: routeId },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                    myRoutes();
+                    suggestRoutes(routeId);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function deleteRoute(routeId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/deleteRoute',
+            data: { RouteId: routeId },
+            success: function (data) {
+                $('#deleteConfirmModal').modal('hide');
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                    myRoutes();
+                    hideLeftPanel();
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function deleteRouteSuggest(selfRouteId, routeId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/deleteRouteSuggest',
+            data: { RouteId: routeId, SelfRouteId: selfRouteId },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                    myRoutes();
+                    suggestRoutes(routeId);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function joinGroup(groupId, routeId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/joinGroup',
+            data: { GroupId: groupId, RouteId: routeId },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                    myRoutes();
+                    suggestRoutes(routeId);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function leaveGroup(groupId, routeId) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/leaveGroup',
+            data: { GroupId: groupId, RouteId: routeId },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                        myRoutes();
+                        suggestRoutes(routeId);
+                    });
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function showGrouponMap(groupIdstr) {
+        var imageGroups = $("#" + groupIdstr).children(".showed");
+        if (currentfeatureGroup!==null){
+            removeLayerFromMap(currentfeatureGroup);
+        }
+        currentGroupLayer.length = 0;
+        $.each(imageGroups, function (key, valueimg) {
+            if (valueimg.id > 0) {
+                var color = $("#" + groupIdstr).find("#" + valueimg.id).children(".colorCls").attr("class").replace('color-label', '').replace('colorCls', '').replace(/ /g, '');
+                $.each(groupRouteList, function (key, value) {
+                    if (parseInt(value.RouteId) === parseInt(valueimg.id)) {
+                        if (color === "colorGreen") {
+                            var popup = '<div class="popup greenpopup"><div class="pull-left"><img src="/user/RouteUserImage/' + value.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                                '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                                '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + value.TimingString + '</div>' +
+                                '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + value.PricingString + '</div>' +
+                                '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + value.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div></div>';
+                            var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                            srcGreenMarker = new L.Marker(srclatlng, { icon: IconGreen }).bindPopup(popup);
+                            currentGroupLayer.push(srcGreenMarker);
+                            var dstlatlng = L.latLng(value.DstLatitude, value.DstLongitude);
+                            dstGreenMarker = new L.Marker(dstlatlng, { icon: IconGreen });
+                            currentGroupLayer.push(dstGreenMarker);
+                        }
+                        if (color === "colorOrange") {
+                            var popup = '<div class="popup orangepopup"><div class="pull-left"><img src="/user/RouteUserImage/' + value.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                            '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                            '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + value.TimingString + '</div>' +
+                            '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + value.PricingString + '</div>'+
+                            '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + value.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div></div>';
+                            var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                            srcOrangeMarker = new L.Marker(srclatlng, { icon: IconOrange }).bindPopup(popup);
+                            currentGroupLayer.push(srcOrangeMarker);
+                            var dstlatlng = L.latLng(value.DstLatitude, value.DstLongitude);
+                            dstOrangeMarker = new L.Marker(dstlatlng, { icon: IconOrange });
+                            currentGroupLayer.push(dstOrangeMarker);
+                        }
+                        if (color === "colorBlue") {
+                            var popup = '<div class="popup bluepopup"><div class="pull-left"><img src="/user/RouteUserImage/' + value.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                                '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                                '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + value.TimingString + '</div>' +
+                                '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + value.PricingString + '</div>'+
+                                '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + value.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div></div>';
+                            var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                            srcBlueMarker = new L.Marker(srclatlng, { icon: IconBlue }).bindPopup(popup);
+                            currentGroupLayer.push(srcBlueMarker);
+                            var dstlatlng = L.latLng(value.DstLatitude, value.DstLongitude);
+                            dstBlueMarker = new L.Marker(dstlatlng, { icon: IconBlue });
+                            currentGroupLayer.push(dstBlueMarker);
+
+                        }
+                        if (color === "colorRed") {
+                            var popup = '<div class="popup redpopup"><div class="pull-left"><img src="/user/RouteUserImage/' + value.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                            '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                            '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + value.TimingString + '</div>' +
+                                '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + value.PricingString + '</div>'+
+                                '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + value.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div></div>';
+                            var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                            srcRedMarker = new L.Marker(srclatlng, { icon: IconRed }).bindPopup(popup);
+                            currentGroupLayer.push(srcRedMarker);
+                            var dstlatlng = L.latLng(value.DstLatitude, value.DstLongitude);
+                            dstRedMarker = new L.Marker(dstlatlng, { icon: IconRed });
+                            currentGroupLayer.push(dstRedMarker);
+                        }
+                        if (color === "colorCar") {
+                            var popup = '<div class="popup carpopup"><div class="pull-left"><img  src="/user/RouteUserImage/' + value.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                            '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + value.Name + ' ' + value.Family + '</b></div>' +
+                            '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + value.TimingString + '</div>' +
+                            '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + value.PricingString + '</div>' +
+                            '<div><i class="fa fa-cab"></i>&nbsp;&nbsp;' + value.CarString + '</div>'+
+                                '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + value.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div></div>';
+                            var srclatlng = L.latLng(value.SrcLatitude, value.SrcLongitude);
+                            srcCarMarker = new L.Marker(srclatlng, { icon: IconCar }).bindPopup(popup);
+                            currentGroupLayer.push(srcCarMarker);
+                            var dstlatlng = L.latLng(value.DstLatitude, value.DstLongitude);
+                            dstCarMarker = new L.Marker(dstlatlng, { icon: IconCar });
+                            currentGroupLayer.push(dstCarMarker);
+                        }
+                    }
+                });
+                currentfeatureGroup = new L.featureGroup(currentGroupLayer).addTo(map);
+                map.fitBounds(currentfeatureGroup.getBounds(), { padding: [50, 50] });
+            }
+        });
+    }
+    function toggleRouteGroup(element) {
+        if (!element.hasClass('showed') && (element.hasClass('routeGroup')||element.hasClass('suggestGroup'))) {
+            element.addClass('showed');
+        } else {
+            element.removeClass('showed');
+        }
+    }
+    function setSuggestMapMarker(suggestRoute) {
+        if (currentfeatureGroup !== null) {
+            removeLayerFromMap(currentfeatureGroup);
+        }
+        var srclatlng = L.latLng(suggestRoute.SrcLatitude, suggestRoute.SrcLongitude);
+        srcSuggestMarker = new L.Marker(srclatlng, { icon: IconSrc });
+        //map.addLayer(srcSuggestMarker);
+        var dstlatlng = L.latLng(suggestRoute.DstLatitude, suggestRoute.DstLongitude);
+        dstSuggestMarker = new L.Marker(dstlatlng, { icon: IconDst });
+        //map.addLayer(dstSuggestMarker);
+        currentfeatureGroup = new L.featureGroup([sourceMarker, destinationMarker, srcSuggestMarker, dstSuggestMarker]).addTo(map);
+        map.fitBounds(currentfeatureGroup.getBounds(), { padding: [50, 50] });
+    }
+    function getRouteGroupColor(i) {
+        switch (i) {
+            case 0:
+                return "colorGreen";
+            case 1:
+                return "colorOrange";
+            case 2:
+                return "colorBlue";
+            case 3:
+                return "colorRed";
+        }
+    }
+    function myRoutes() {
+        var routeJmodel;
+        var routeCount = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/app/getRoutes',
+            success: function (data) {
+                routeList.length = 0;
+                groupRouteList.length = 0;
+                groupRoutes.length = 0;
+                $("#feature-list tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    routeCount++;
+                    var routeVals = JSON.parse(value);
+                    var routeJmodel = getRouteResponseFromModel(routeVals);
+                    routeList.push({
+                        RouteId: routeJmodel.RouteId,
+                        SrcAddress: routeJmodel.SrcAddress,
+                        SrcLatitude: routeJmodel.SrcLatitude,
+                        SrcLongitude: routeJmodel.SrcLongitude,
+                        DstAddress: routeJmodel.DstAddress,
+                        DstLatitude: routeJmodel.DstLatitude,
+                        DstLongitude: routeJmodel.DstLongitude,
+                        TimingString: routeJmodel.TimingString,
+                        PricingString: routeJmodel.PricingString,
+                        CarString: routeJmodel.CarString,
+                        AccompanyCount: routeJmodel.AccompanyCount,
+                        GroupId: routeJmodel.GroupId,
+                        IsDrive: routeJmodel.IsDrive
+                    });
+                    var gCounter = routeJmodel.AccompanyCount;
+                    var selfGroupId = 0;
+                    var grecord = '';
+                    $.each(routeVals.GroupRoutes, function (gkey, gvalue) {
+                        var groupRouteModel = getBriefRouteFromModel(gvalue);
+                        selfGroupRoutes.push({
+                            RouteId: groupRouteModel.RouteId
+                        });
+                        groupRouteList.push({
+                            RouteId: groupRouteModel.RouteId,
+                            Name: groupRouteModel.Name,
+                            Family: groupRouteModel.Family,
+                            SrcLatitude: groupRouteModel.SrcLatitude,
+                            SrcLongitude: groupRouteModel.SrcLongitude,
+                            DstLatitude: groupRouteModel.DstLatitude,
+                            DstLongitude: groupRouteModel.DstLongitude,
+                            TimingString: groupRouteModel.TimingString,
+                            PricingString: groupRouteModel.PricingString,
+                            AccompanyCount: groupRouteModel.AccompanyCount,
+                            GroupId: groupRouteModel.GroupId,
+                            IsDrive: groupRouteModel.IsDrive,
+                            CarString: groupRouteModel.CarString,
+                            RgIsConfimed: groupRouteModel.RgIsConfimed
+                        });
+                        var imgColorBlock = '';
+                        if (groupRouteModel.IsDrive === true) {
+                            imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                        } else {
+                            imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(gCounter) + '">&nbsp;</span>';
+                        }
+                        grecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup routeGroup">' +
+                            imgColorBlock + '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                        if (groupRouteModel.RgIsConfimed === true) {
+                            grecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                        } else {
+                            grecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                        }
+                        gCounter += 1;
+                        gCounter += groupRouteModel.AccompanyCount;
+                        selfGroupId = groupRouteModel.GroupId;
+                    });
+                    for (var i = gCounter; i < 4; i++) {
+                        grecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                    }
+                    //grecord += '</div>';
+                    if (gCounter - routeJmodel.AccompanyCount > 0) {
+                        grecord += '<div><div class="spacer-5">' +
+                            '</div><button class="btn btn-xs btn-success appointmentBtn" type="button"><i class="fa fa fa-group"></i>&nbsp;' + $appointment + '</button>';
+                        grecord += '<button class="btn btn-xs btn-danger pull-left leaveGroupBtn" type="button"><i class="fa fa fa-sign-out"></i>&nbsp;' + $exitGroup + '</button></div>';
+                    }
+                    var sgrecord = '';
+                    $.each(routeVals.SuggestGroups, function (sgkey, sgvalue) {
+                        var sgCounter = 0;
+
+                        sgrecord += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>' + $suggestedRideShareGroup + '</h3></header><div class="faq-content clearfix">';
+                        sgrecord += '<div><button id="grj' + sgvalue.GroupId + '" class="btn btn-xs btn-success joinGroup" type="button"><i class="fa fa-user"></i>&nbsp;' + $joinGroup + '</button>' +
+                            '<button id="grd' + sgvalue.GroupId + '" class="btn btn-xs btn-danger pull-left deleteSuggestGroup" type="button">&nbsp;' + $deleteSuggestion + '<i class="fa fa-times"></i></button></div>' +
+                            '<div class="spacer-10"></div>' +
+                            '<div id="gr' + sgvalue.GroupId + '" class="groupId">';
+                        $.each(sgvalue.GroupMembers, function (gmkey, gmvalue) {
+                            var groupRouteModel = getBriefRouteFromModel(gmvalue);
+                            groupRoutes.push({
+                                RouteId: groupRouteModel.RouteId,
+                                sgvalue: sgvalue.GroupId
+                            });
+                            groupRouteList.push({
+                                RouteId: groupRouteModel.RouteId,
+                                Name: groupRouteModel.Name,
+                                Family: groupRouteModel.Family,
+                                SrcLatitude: groupRouteModel.SrcLatitude,
+                                SrcLongitude: groupRouteModel.SrcLongitude,
+                                DstLatitude: groupRouteModel.DstLatitude,
+                                DstLongitude: groupRouteModel.DstLongitude,
+                                TimingString: groupRouteModel.TimingString,
+                                PricingString: groupRouteModel.PricingString,
+                                AccompanyCount: groupRouteModel.AccompanyCount,
+                                IsDrive: groupRouteModel.IsDrive,
+                                CarString: groupRouteModel.CarString,
+                                GroupId: groupRouteModel.GroupId,
+                                RgIsConfimed: groupRouteModel.RgIsConfimed
+                            });
+                            var imgColorBlock = '';
+                            if (gmvalue.IsDrive === true) {
+                                imgColorBlock = '<div class="colorCls colorCar">&nbsp;</div>';
+                            } else {
+                                imgColorBlock = '<span class="colorCls color-label ' + getRouteGroupColor(sgCounter) + '">&nbsp;</span>';
+                            }
+                            sgrecord += '<div id="' + groupRouteModel.RouteId + '" class="imageGroup suggestGroup">' +
+                                imgColorBlock +
+                                '<img src="/user/RouteUserImage/' + groupRouteModel.RouteId + '" class="avatar" alt="' + $picture + '">';
+                            if (groupRouteModel.RgIsConfimed === true) {
+                                sgrecord += '<span class="label label-success">' + $confirm + '</span></div>';
+                            } else {
+                                sgrecord += '<span class="label label-warning">' + $waitToRespond + '</span></div>';
+                            }
+                            sgCounter += groupRouteModel.AccompanyCount;
+                            sgCounter += 1;
+                        });
+                        for (var i = sgCounter; i < 4; i++) {
+                            sgrecord += '<div id="" class="imageGroup"><span class="color-label ' + getRouteGroupColor(i) + '">&nbsp;</span><img src="/Content/img/Unknown.png" class="avatar" alt="' + $picture + '"><span class="label label-danger">' + $seat + '</span></div>';
+                        }
+                        sgrecord += '</div><div class="spacer-10"></div></article></div>';
+                    });
+                    var src = routeJmodel.SrcAddress;
+                    var dst = routeJmodel.DstAddress;
+                    var record = '<tr class="feature-row" id="' + routeJmodel.RouteId + '"><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                        '<div class="pull-right"><h5>' + getBrief(routeJmodel.TimingString, 19) + '&nbsp;</h5></div>' +
+                        '<div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+                        '<div><button class="btn btn-xs btn-info" type="button"><i class="fa fa-road"></i></button>' +
+                        '<button class="btn btn-xs btn-danger pull-left deleteRoute" type="button">&nbsp;' + $deleteRoute + '<i class="fa fa-times"></i></button></div>' +
+                        '<div><i class="fa fa-send"></i>&nbsp;&nbsp;' + getBrief(src, 35) + '</div>' +
+                        '<div><i class="fa fa-cab fa-send-o"></i>&nbsp;&nbsp;' + getBrief(dst, 35) + '</div>' +
+                        '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + routeJmodel.TimingString + '</div>' +
+                        '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + routeJmodel.PricingString + '</div>';
+                    if (routeJmodel.IsDrive === true) {
+                        record += '<div><i class="fa fa-cab"></i>&nbsp;&nbsp;' + routeJmodel.CarString + '</div>';
+                    }
+                    if (routeJmodel.AccompanyCount > 0) {
+                        record += '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + routeJmodel.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div>';
+                    }
+                    if (grecord !== '') {
+                        record += '<div><b>' + $rideShareGroup + '</b></div>';
+                        record += '<div class="groupId" id="gr' + selfGroupId + '">';
+                        record += grecord;
+                        record += '</div>';
+                    }
+                    record += '<div class="spacer-5"></div><hr>';
+                    if (sgrecord !== '') {
+                        //record += '<div class="faq"><article class="faq-group"><header><i class="fa fa-minus"></i><h3>'+$suggestedRideShareGroup+'</h3></header><div class="faq-content clearfix">';
+                        record += sgrecord;
+                        //record += '<div class="spacer-10"></div></article></div>';
+                    }
+                    record += '</div></td></tr>';
+                    $("#feature-list tbody").append(record);
+                });
+                if (routeCount === 0) {
+                    var notRoute = '<tr><td style="vertical-align: middle;"><div class="box"><div class="notFound">' + $noRouteFound + '</div>' +
+                        '<div class="notFound"><a class="newRoute">' + $submitNewRoute + '</a></div></div></td></tr>';
+                    $("#feature-list tbody").append(notRoute);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function accceptSuggestion(id, selfid) {
+        $.ajax({
+            type: 'POST',
+            url: '/app/acceptSuggestRoute',
+            data: { routeId: id, selRouteId: selfid },
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Messages !== undefined && data.Messages !== null && data.Messages.length > 0) {
+                    $.each(data.Messages, function (key, value) {
+                        showMessage.Success("", value);
+                    });
+                    myRoutes();
+                    suggestRoutes(selfid);
+                }
+            }
+        }).error(function (error) {
+
+        });
+    }
+    function suggestRoutes(id) {
+        showLeftPanel();
+        var suggestCount = 0;
+        $.ajax({
+            type: 'POST',
+            url: '/app/getSuggestRoute',
+            data: { routeId: id },
+            success: function (data) {
+                $("#route-list tbody").empty();
+                $.each(data.Messages, function (key, value) {
+                    var suggestRoute = JSON.parse(value);
+                    briefRouteJmodel = getBriefRouteFromModel(suggestRoute);
+                    var result = {
+                        RouteId: briefRouteJmodel.RouteId,
+                        SelfRouteId: id,
+                        SrcAddress: briefRouteJmodel.SrcAddress,
+                        SrcLatitude: briefRouteJmodel.SrcLatitude,
+                        SrcLongitude: briefRouteJmodel.SrcLongitude,
+                        DstAddress: briefRouteJmodel.DstAddress,
+                        DstLatitude: briefRouteJmodel.DstLatitude,
+                        DstLongitude: briefRouteJmodel.DstLongitude,
+                        TimingString: briefRouteJmodel.TimingString,
+                        PricingString: briefRouteJmodel.PricingString,
+                        CarString: briefRouteJmodel.CarString,
+                        Family: briefRouteJmodel.Family,
+                        Name: briefRouteJmodel.Name,
+                        Gender: briefRouteJmodel.Gender,
+                        SrcDistance: briefRouteJmodel.SrcDistance,
+                        DstDistance: briefRouteJmodel.DstDistance,
+                        AccompanyCount: briefRouteJmodel.AccompanyCount,
+                        IsDrive: briefRouteJmodel.IsDrive
+                    }
+                    routeList.push(result);
+                    suggestCount++;
+                    var carRecord = "";
+                    var accompany = "";
+                    //setSuggestMapMarker(result);
+                    if (result.IsDrive === true) {
+                        carRecord = '<div><i class="fa fa-cab"></i>&nbsp;&nbsp;' + result.CarString + '</div>';
+                    }
+                    if (result.AccompanyCount > 0) {
+                        accompany = '<div><i class="fa fa-user-plus"></i>&nbsp;&nbsp;' + result.AccompanyCount + '&nbsp;&nbsp;' + $person + '</div>';
+                    }
+                    var record = '<tr class="suggestRow" id="' + result.RouteId + '" selfid="' + id + '"><td style="vertical-align: middle;"><div class="portlet"><div class="portlet-header">' +
+                        '<div class="pull-right"><h5>' + getBrief(result.TimingString, 20) + '</h5></div><div class="pull-left"><a href="#" class="btn"><i class="fa fa-minus"></i></a></div></div><div class="portlet-content">' +
+                        '<div class="pull-left"><img src="/user/RouteUserImage/' + result.RouteId + '" class="avatar" alt="' + $picture + '"></div>' +
+                        '<div><i class="fa fa-user"></i>&nbsp;&nbsp;<b>' + result.Name + ' ' + result.Family + '</b></div>' +
+                        '<div><i class="fa fa-clock-o"></i>&nbsp;&nbsp;' + result.TimingString + '</div>' +
+                        '<div><i class="fa fa-money"></i>&nbsp;&nbsp;' + result.PricingString + '</div>' +
+                         carRecord +
+                         accompany +
+                        '<div><b>' + $srcDistance + ': </b>' + result.SrcDistance + '</div>' +
+                        '<div><b>' + $dstDistance + ': </b>' + result.DstDistance + '</div>' +
+                        '<div><button class="btn btn-xs btn-success accept" type="button">' + $addToRideShareGroup + '</button>&nbsp;&nbsp;<button class="btn btn-xs btn-danger deleteRouteSuggest" type="button">' + $deleteSuggestion + '</button></div>';
+                    record += '</div></td></tr>';
+                    $("#route-list tbody").append(record);
+                });
+                if (suggestCount === 0) {
+                    var notRoute = '<tr><td style="vertical-align: middle;"><div class="box"><div class="notFound">' + $noSuggestFound + '</div>' +
+                        '<div class="notFound">' + $suggesttofriends + '</div>' +
+                        '<div class="socials">' +
+                        '<a class="sociallink" href="https://telegram.me/joinchat/Bgv7VjutLwBTpBIM_ul36g" alt="اشتراک در اینستاگرام"><i class="fa fa fa-instagram fa-2x"></i></a>' +
+                        '<a class="sociallink" href="https://telegram.me/joinchat/Bgv7VjutLwBTpBIM_ul36g" alt="اشتراک در تلگرام"><img src="/Content/assets/img/t_logo2.png" class="fa-2x" width="28" height="38"/></a>' +
+                        '<a class="sociallink" href="https://telegram.me/joinchat/Bgv7VjutLwBTpBIM_ul36g" alt="اشتراک در گوگل"><i class="fa fa fa-google-plus fa-2x"></i></a>' +
+                        '</div></div></td></tr>';
+                    $("#route-list tbody").append(notRoute);
+                }
+                getRouteUser(id);
+            }
+        }).error(function (error) {
+
+        });
+    }
+</script>

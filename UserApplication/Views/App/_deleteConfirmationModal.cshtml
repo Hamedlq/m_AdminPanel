@@ -1,0 +1,26 @@
+﻿<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content direction-rtl">
+            <form id="confirmForm">
+                <input type="hidden" id="rId" value="0" />
+                <div class="modal-header">
+                    <button type="button" class="close pull-left" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">تایید حذف</h4>
+                </div>
+                <div class="alert-wrap"></div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="deleteConfirmationRouteId" value=""/>
+                        <div id="confirmMessage">
+                             آیا می خواهید این مسیر را حذف نمایید؟
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">نه</button>
+                    <button type="submit" id="deleteConfirmYes" class="btn btn-primary pull-right">بله</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

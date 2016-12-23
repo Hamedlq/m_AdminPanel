@@ -1,0 +1,28 @@
+﻿<script type="text/javascript">
+    $(document).on("click", "#howItem,#howMenuItem", function() {
+        $("#howModal").modal("show");
+    });
+    $(document).on("click", "#timing-btn", function () {
+        var $this = $(this);
+        $formSubmitBtnTxt = $this.text();
+        $this.text($pleasewait);
+        getRouteTimingData();
+        $.ajax({
+            type: 'POST',
+            url: '../app/ValidateTiming',
+            data:routeRequestJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0){
+                    $("#timingModal").modal("hide");
+                    $("#howModal").modal({ backdrop: 'static', keyboard: false });
+                }
+                $this.text($formSubmitBtnTxt);
+            }
+        });
+        
+    });
+    $("#timingform .form-group").on("click", function () {
+        $(this).find("input:radio").attr("checked", "checked");
+    });
+</script>

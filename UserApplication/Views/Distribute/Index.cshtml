@@ -1,0 +1,84 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="ie ie6 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 7]>     <html class="ie ie7 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 8]>     <html class="ie ie8 lte9 lte8 no-js">      <![endif]-->
+<!--[if IE 9]>     <html class="ie ie9 lte9 no-js">           <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js">                       <![endif]-->
+<!--[if !IE]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>توزیع</title>
+
+    <!-- // Windows 8 tile // -->
+
+    <meta name="application-name" content="توزیع">
+    <meta name="msapplication-TileColor" content="#333333" />
+
+    <!-- // Handheld devices misc // -->
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="/content/css/bootstrap.css">
+    <link rel="stylesheet" href="/content/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/content/css/fonts.css">
+    <link rel="stylesheet" href="/content/css/distribute.css">
+
+</head>
+<body>
+    <div id="container-distribute" class="clearfix">
+        <div id="demo-overview"></div>
+        <div id="distribute-box">
+            <div class="distribute-box-inner clearfix direction-rtl">
+                <div class="spacer-40"></div>
+                <div class="subheading text-center">
+                    <h1>نقاط توزیع</h1>
+                </div>
+                <form id="distributeForm">
+                    <div class="modal-body direction-rtl">
+                        <fieldset>
+                            <div class="distribute-alert-wrap"></div>
+                            <div class="spacer-20"></div>
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="map">
+                                        <!-- Google - Map - Api -->
+                                    </div><!-- End #map -->
+                                </div><!-- End .col-md-12 -->
+                            </div>
+                            <div class="spacer-20"></div>
+                            <div class="row">
+                                <button type="submit" id="submitdistribute" class="btn btn-primary btn-submit pull-center">ثبت نقاط</button>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <footer id="distribute-footer">
+            <strong>می بریم</strong>
+            <div class="spacer-5"></div>
+            <small>تمامی حقوق محفوظ است</small>
+        </footer>
+    </div>
+    
+    <script src="/content/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/content/assets/js/bootstrap.min.js"></script>
+    <!-- Google map javascript api v3 -->
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD45Nu6JYgh1oKG5G9ut7Nr4QW48gx-6ug&amp;sensor=false"></script>
+    <script src="/content/js/distribute_script.js"></script>
+</body>
+</html>
+

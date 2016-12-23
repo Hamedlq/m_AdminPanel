@@ -1,0 +1,110 @@
+﻿@using ServiceLayer
+@model ServiceLayer.Models.LoginModel
+@{
+    ViewBag.Title = "login";
+}
+@{
+    Layout = "";
+}
+@*
+    فایل جاوا اسکریپت در
+    content/assets/js/login.js
+    قرار دارد لطفا آن را ویرایش کنید
+*@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="ie ie6 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 7]>     <html class="ie ie7 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 8]>     <html class="ie ie8 lte9 lte8 no-js">      <![endif]-->
+<!--[if IE 9]>     <html class="ie ie9 lte9 no-js">           <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js">                       <![endif]-->
+<!--[if !IE]><!-->
+<html class="no-js">
+                       <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Uhamrah</title>
+
+    <link rel="stylesheet" href="/content/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/content/assets/css/login.css"/>
+
+    <script src="/content/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/content/assets/js/showpassword.1.0.min.js"></script>
+    <script src="/content/assets/js/login.js"></script>
+    <script src="/content/assets/js/nanogress.1.0.min.js"></script>
+    <script src="/content/assets/js/jquery.cookie.js"></script>
+</head>
+<body>
+<div id="container-login" class="clearfix">
+    <div id="demo-overview"></div>
+    <div id="login-box">
+        <div class="login-box-inner clearfix direction-rtl">
+            <div class="spacer-40"></div>
+            <div class="alert-wrap"></div>
+            <form id="form-login">
+                <div class="row">
+                    <div class="col-lg-12">
+                        @Html.LabelFor(m => m.Mobile)<span class="asterisk">*</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control required", placeholder = @getResource.getString("Mobile"), id = "fc-id-1", tabindex = "1" })
+                    </div>
+                </div>
+                <div class="spacer-10"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        @Html.LabelFor(m => m.Pass)<span class="asterisk">*</span>
+                        <a href="#" id="showpassword-trigger" class="underline">نمایش رمزعبور</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        @Html.PasswordFor(m => m.Pass, new { @class = "form-control required", placeholder = @getResource.getString("SensitivePassword"), id = "fc-id-2", tabindex = "2" })
+                    </div>
+                </div>
+                <div class="spacer-10"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="pull-right">
+                            @Html.LabelFor(m => m.RememberMe)<span></span><input type="checkbox" tabindex="3" />
+                        </div>
+                        <div class="pull-left">
+                            <a href="forgot.html" class="underline">فراموشی رمزعبور</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer-15"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- just for the demo....replace this with an form element -->
+                        <a href="@ViewBag.ReturnUrl" class="btn btn-default form-control" id="fake-submit" tabindex="4">@getResource.getString("Enter")</a>
+                    </div>
+                </div>
+                <div class="spacer-40"></div>
+                <div class="or-line"><span>یا</span></div>
+                <div class="spacer-40"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="@Url.Action("Login", "User")" class="btn btn-block btn-success" tabindex="6">@getResource.getString("RegisterIt") &nbsp;&nbsp;!!!!</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer id="login-footer">
+        <strong>Copyright © 2015 حامد لشکری</strong>
+        <div class="spacer-5"></div>
+        <small>Lorem ipsum dolor sit amet, islum consectetur adipiscing elit. All rights reserved.</small>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+﻿@using ServiceLayer.Models
+@model ServiceLayer.Models.RouteRequestModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="ie ie6 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 7]>     <html class="ie ie7 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 8]>     <html class="ie ie8 lte9 lte8 no-js">      <![endif]-->
+<!--[if IE 9]>     <html class="ie ie9 lte9 no-js">           <![endif]-->
+<!--[if gt IE 9]>  <html class="no-js">                       <![endif]-->
+<!--[if !IE]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>می بریم</title>
+    <link rel="stylesheet" href="/content/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/content/assets/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/content/assets/css/leaflet.css"><!-- https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.css -->
+    <link rel="stylesheet" href="/content/assets/css/MarkerCluster.css"><!-- https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css -->
+    <link rel="stylesheet" href="/content/assets/css/MarkerCluster.Default.css"><!-- https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css -->
+    <link rel="stylesheet" href="/content/assets/css/L.Control.Locate.css"><!-- https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css -->
+    <link rel="stylesheet" href="/content/assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
+    <link rel="stylesheet" href="/content/assets/css/bootstrap-timepicker.min.css">
+    <link rel="stylesheet" href="/content/assets/css/helpers.css">
+    <link rel="stylesheet" href="/content/assets/css/fileinput.min.css">
+    <link rel="stylesheet" href="/content/assets/css/bootstrap-tagsinput.css">
+    <link rel="stylesheet" href="/content/assets/css/notify.css">
+    <link rel="stylesheet" href="/content/assets/css/fonts.css">
+    <link rel="stylesheet" href="/content/assets/css/jquery.Bootstrap-PersianDateTimePicker.min.css">
+    <link rel="stylesheet" href="/content/assets/select2/select2.css">
+    <link rel="stylesheet" href="/content/assets/css/app.css">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/content/assets/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/content/assets/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/content/assets/img/favicon-152.png">
+    <link rel="icon" sizes="196x196" href="/content/assets/img/favicon-196.png">
+    <link rel="icon" type="image/x-icon" href="/content/assets/img/favicon.ico">
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div class="navbar-icon-container">
+                    <a href="#" class="navbar-icon pull-left visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
+                    <a class="navbar-brand pull-right visible-xs" href="#">می بریم</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="llist-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;</a></li>
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="exit"><i class="fa fa-close white"></i>&nbsp;&nbsp;خروج</a></li>
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="NameFamily"><i class="fa fa-user white"></i>&nbsp;&nbsp;! سلام</a></li>
+
+                    @*<li class="hidden-xs">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-comments"></i>
+                            <span class="indicator-dot">3</span>
+                        </a>
+                        @Html.Partial("~/Views/App/_messageMenu.cshtml")
+                    </li>
+                    <li class="hidden-xs">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-inbox"></i>
+                            <span class="indicator-dot">3</span>
+                        </a>
+                        @Html.Partial("~/Views/App/_routeAlertMenu.cshtml")
+
+                    </li>*@
+                </ul>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="rlist-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;</a></li>
+                </ul>
+                <a class="navbar-brand pull-right hidden-xs" href="#">می بریم</a>
+                <ul class="nav navbar-nav pull-right">
+@*                    <li><a href="@Url.Action("Index", "help")#rules" target="_blank" id="my-help-btn"><i class="fa fa-book white"></i>&nbsp;&nbsp;قوانین و مقررات</a></li>*@
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="users-search-btn"><i class="fa fa-question white"></i>&nbsp;&nbsp;جستجوی کاربر</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="users-info-btn"><i class="fa fa-info white"></i>&nbsp;&nbsp;کاربران</a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="users-ways-btn"><i class="fa fa-road white"></i>&nbsp;&nbsp;همه مسیرها</a></li>
+@*                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="srcDstMenuItem"><i class="fa fa-plus white"></i>&nbsp;&nbsp;مسیرجدید</a></li>*@
+                    @*<li class="dropdown">
+                        <a id="new-way-btn" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus white"></i>&nbsp;&nbsp;مسیر<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="srcDstMenuItem"><i class="fa fa-road"></i>&nbsp;&nbsp;مسیر جدید</a></li>
+                            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="timingMenuItem"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;زمان</a></li>
+                            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="howMenuItem"><i class="fa fa-roadfa-group"></i>&nbsp;&nbsp;شرایط</a></li>
+                            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="priceMenuItem"><i class="fa fa-money"></i>&nbsp;&nbsp;هزینه</a></li>
+                            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="confirmMenuItem"><i class="fa fa-check"></i>&nbsp;&nbsp;تایید</a></li>
+                        </ul>
+                    </li>*@
+                </ul>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </div>
+    <div id="container">
+        <div id="sidebar-right" class="sidebar">
+            <div class="sidebar-wrapper">
+                <div class="panel panel-default direction-rtl" id="main-panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            مسیرهای شما
+                            @*<button type="button" class="btn btn-xs btn-default pull-left" id="main-sidebar-hide-btn"><i class="fa fa-chevron-right"></i></button>*@
+                        </h3>
+                    </div>
+                    @*<div class="panel-body">
+                    </div>*@
+                    <div class="sidebar-table">
+                        <table class="table" id="feature-list">
+                            <thead class="hidden">
+                                <tr>
+                                    <th>Route</th>
+                                <tr>
+                            </thead>
+                            <tbody class="list"></tbody>
+                        </table>
+                        @*<nav class="sidebar-nav-v2">
+                                    <ul>
+                                        <li>
+                                            <a id="new-way-Item" href="#"><i class="fa fa-plus"></i> مسیرجدید <span class="indicator-pill">32</span></a>
+                                        </li>
+                                        <li class="seperator"></li>
+                                        <li>
+                                            <a id="my-ways-Item" href="#"><i class="fa fa-road"></i> مسیرهای من<span class="indicator-dot">2</span></a>
+                                        </li>
+                                        <li class="seperator"></li>
+                                        <li>
+                                            <a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="my-info-btn2"><i class="fa fa-info"></i> اطلاعات من</a>
+                                        </li>
+                                    </ul>
+                                </nav><!-- End .sidebar-nav-v1 -->
+                            </div><!-- End .sidebar-module -->*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aside id="sidebar-left" class="sidebar">
+            <div class="sidebar-wrapper">
+                <div class="panel panel-default direction-rtl" id="features">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            &nbsp;&nbsp;هم مسیرهای پیشنهادی
+                            @*<button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button>*@
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                    <div class="sidebar-table">
+                        <table class="table table-hover" id="route-list">
+                            <thead class="hidden">
+                                <tr>
+                                    <th>Route</th>
+                                <tr>
+                            </thead>
+                            <tbody class="list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div id="map"></div>
+        <!-- address bar	   -->
+        @Html.Partial("~/Views/App/_createRoute.cshtml")
+        @*@Html.Partial("~/Views/App/_groupContainer.cshtml")*@
+
+
+        <div id="loading">
+            <div class="loading-indicator">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info progress-bar-full"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        @Html.Partial("~/Views/App/_pricingModal.cshtml")
+        @Html.Partial("~/Views/App/_timingModal.cshtml")
+        @Html.Partial("~/Views/App/_userInfoModal.cshtml")
+        @Html.Partial("~/Views/App/_howModal.cshtml")
+        @Html.Partial("~/Views/App/_termsConditionsModal.cshtml")
+        @Html.Partial("~/Views/App/_confirmRouteModal.cshtml")
+        @Html.Partial("~/Views/App/_deleteConfirmationModal.cshtml")
+        @Html.Partial("~/Views/App/_appointmentModal.cshtml")
+        @Html.Partial("~/Views/App/_finalConfirmModal.cshtml")
+        @Html.Partial("~/Views/App/_userFilterModal.cshtml")
+
+        <script src="/content/assets/js/jquery-2.1.4.min.js"></script>
+        <script src="/content/assets/js/bootstrap.min.js"></script><!-- https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js -->
+        <script src="/content/assets/js/typeahead.bundle.min.js"></script><!-- https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.min.js -->
+        <script src="/content/assets/js/handlebars.min.js"></script><!-- https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js -->
+        <script src="/content/assets/js/list.min.js"></script><!-- https://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js -->
+        <script src="/content/assets/js/leaflet.js"></script><!-- https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js -->
+        <script src="/content/assets/js/leaflet.markercluster.js"></script><!-- https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js -->
+        <script src="/content/assets/js/L.Control.Locate.min.js"></script><!-- https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js -->
+        <script src="/content/assets/js/bootstrap-timepicker.min.js"></script>
+        <script src="/content/assets/js/fileinput.min.js"></script>
+        <script src="/content/assets/js/fileinput_locale_fa.js"></script>
+        <script src="/content/assets/js/jalaali.js"></script>
+        <script src="/content/assets/js/jquery.Bootstrap-PersianDateTimePicker.js"></script>
+        <script src="/content/assets/js/bootstrap-tagsinput.js"></script>
+        <script src="/content/assets/js/bootstrap-notify.min.js"></script>
+        <script src="/content/assets/js/jquery.prefix-input.js"></script>
+        <script src="/content/assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
+        <script src="/content/assets/select2/select2.min.js"></script>
+        <script src="/content/assets/js/app.js"></script>
+        @Html.Partial("_clientApp_LocalizeJs_fa");
+        @Html.Partial("_ClientApp", Model);
+        @Html.Partial("_ClientApp_admin", Model);
+        @Html.Partial("_clientApp_timingModalJs");
+        @Html.Partial("_clientApp_appointModalJs");
+        @Html.Partial("_clientApp_RouteMenuJs");
+        @Html.Partial("_clientApp_userInfoModalJs");
+    </div>
+</body>
+</html>

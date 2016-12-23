@@ -1,0 +1,183 @@
+﻿<div class="modal fade direction-rtl" id="userModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close pull-left" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">اطلاعات من</h4>
+            </div>
+            <div class="alert-wrap"></div>
+            
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="newUserTabs">
+                    <li class="active pull-right"><a href="#userInfo" data-toggle="tab"><i class="fa fa-user"></i>&nbsp;اطلاعات کاربری</a></li>
+                    <li class="pull-right"><a href="#licenseInfo" data-toggle="tab"><i class="fa fa-credit-card"></i>&nbsp;اطلاعات گواهینامه</a></li>
+                    <li class="pull-right"><a href="#carInfo" data-toggle="tab"><i class="fa fa-car"></i>&nbsp;اطلاعات خودرو</a></li>
+                    <li class="pull-right"><a href="#bankInfo" data-toggle="tab"><i class="fa fa-money"></i>&nbsp;اطلاعات بانکی</a></li>
+                </ul>
+                <div class="tab-content" id="newUserTabsContent">
+                    <div class="tab-pane fade active in" id="userInfo">
+                        <form id="personalInfoForm" enctype="multipart/form-data">
+                            <input type="hidden" name="IsUserPicUploaded" id="IsUserPicUploaded" value="false" />
+                            <div class="well well-sm">
+                                <div class="row">
+                                    <div class="col-md-12 pull-right">
+                                        <p>
+                                            <button type="submit" class="btn btn-primary btn-submit pull-left">ثبت وادامه...</button>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group">
+                                            <label for="Gender">&nbsp;&nbsp;</label>
+                                            <select name="Gender" id="Gender" required class="form-control">
+                                                <option value="1">آقای</option>
+                                                <option value="2">خانم</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group required">
+                                            <label for="Name">نام</label>
+                                            <input type="text" class="form-control" id="Name" name="Name">
+                                        </div>
+                                        <div class="form-group required">
+                                            <label for="Family">نام خانوادگی</label>
+                                            <input type="text" class="form-control" id="Family" name="Family">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group">
+                                            <label for="Mobile">شماره تلفن همراه</label>
+                                            <input type="text" class="form-control" id="Mobile" name="Mobile" disabled="disabled">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Email">پست الکترونیکی</label>
+                                            <input type="text" class="form-control" id="Email" name="Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="NationalCode">کد ملی</label>
+                                            <input type="text" class="form-control" id="NationalCode" name="NationalCode">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group required">
+                                            <label>عکس کاربر</label>
+                                            <img height="200" width="200"  id="UserPic" class="file" />
+@*                                            <input id="UserPic" name="UserPic" class="file" type="file" data-min-file-count="1" />*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="licenseInfo">
+                        <form id="LicenseInfoForm" enctype="multipart/form-data">
+                            <input type="hidden" name="IsLicensePicUploaded" id="IsLicensePicUploaded" value="false" />
+                            <div class="well well-sm">
+                                <div class="col-md-12 pull-right">
+                                    <p>
+                                        <button type="button" class="btn btn-default pull-left nextStep" >الان نه، ادامه</button>
+                                        <button type="submit" class="btn btn-primary btn-submit pull-left">ثبت و ادامه...</button>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group">
+                                            <label for="LicenseNo">شماره گواهینامه</label>
+                                            <input type="text" class="form-control" id="LicenseNo" name="LicenseNo">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 pull-right">
+                                        <div class="form-group required">
+                                            <label>عکس گواهینامه</label>
+                                            <img height="200" width="300"  id="LicensePic" class="file"  />
+@*                                            <input id="LicensePic" name="LicensePic" class="file" type="file" data-min-file-count="1" />*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="carInfo">
+                        <form id="carInfoForm" enctype="multipart/form-data">
+                            <input type="hidden" name="IsCarCardPicUploaded" id="IsCarCardPicUploaded" value="false"/>
+                            <div class="well well-sm">
+                                <div class="col-md-12 pull-right">
+                                    <p>
+                                        <button type="button" class="btn btn-default pull-left nextStep">الان نه، ادامه</button>
+                                        <button type="submit" class="btn btn-primary btn-submit pull-left">...ثبت و ادامه</button>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group required">
+                                            <label for="CarType">نوع خودرو</label>
+                                            <input type="text" class="form-control" id="CarType" name="CarType">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="CarPlateNo">پلاک خودرو</label>
+                                            <input type="text" class="form-control" id="CarPlateNo" name="CarPlateNo">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="CarColor">رنگ خودرو</label>
+                                            <input type="text" class="form-control" id="CarColor" name="CarColor">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 pull-right">
+                                        <div class="form-group required">
+                                            <label>کارت خودرو</label>
+                                            <img height="300" width="200" id="CarCardPic" class="file" />
+                                            <img height="300" width="200"  id="CarCardBPic" class="file" />
+@*                                            <input id="CarCardPic" name="CarCardPic" class="file" type="file" data-min-file-count="2" multiple=true/>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="bankInfo">
+                        <form id="bankInfoForm" enctype="multipart/form-data">
+                            <input type="hidden" name="IsBankCardPicUploaded" id="IsBankCardPicUploaded" value="false" />
+                            <div class="well well-sm">
+                                <div class="col-md-12 pull-right">
+                                    <p>
+                                        <button type="submit" class="btn btn-primary btn-submit pull-left">ثبت و ادامه</button>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 pull-right">
+                                        <div class="form-group required">
+                                            <label for="BankName">بانک عامل</label>
+                                            <select name="BankName" id="BankName" required class="form-control">
+                                                <option value="بانک_ملت">بانک ملت</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group required">
+                                            <label for="BankAccountNo">شماره حساب بانکی</label>
+                                            <input type="text" class="form-control" id="BankAccountNo" name="BankAccountNo">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="BankCardNo">شماره کارت بانکی</label>
+                                            <input type="text" class="form-control" id="BankCardNo" name="BankCardNo">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 pull-right">
+                                        <div class="form-group required">
+                                            <label>عکس کارت بانکی</label>
+                                            <input id="BankCardPic" name="BankCardPic" class="file" type="file" data-min-file-count="1" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="userRoutes" class="btn btn-default pull-left">مسیرها</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

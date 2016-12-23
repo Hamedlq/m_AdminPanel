@@ -1,0 +1,37 @@
+﻿<div class="modal fade direction-rtl" id="howModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-left" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">چند نفرید؟</h4>
+            </div>
+            <div class="alert-wrap"></div>
+            <div class="modal-body">
+                <form id="howform">
+                    <input type="hidden" id="IsDrive" name="IsDrive" value="false"/>
+                    <fieldset>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div class="col-md-8 pull-right">
+                                    <div class="form-group">
+                                        <label for="AccompanyCount">افراد مسن یا خردسال همراه شما چند نفر هستند؟</label>
+                                        <input type="text" class="form-control" id="AccompanyCount" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ماشین دارید؟</label><br/>
+                                        <button type="submit" id="howYes-btn" class="btn btn-default" data-dismiss="modal">بله</button>
+                                        <button type="submit" id="howNo-btn" class="btn btn-primary" data-dismiss="modal">خیر</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">نمیخام برم</button>
+                <button type="button" class="btn btn-default previousStep pull-left" data-dismiss="modal">مرحله قبل</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

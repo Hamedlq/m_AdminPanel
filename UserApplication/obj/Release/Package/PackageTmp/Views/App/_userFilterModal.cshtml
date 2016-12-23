@@ -1,0 +1,75 @@
+﻿@using ServiceLayer.Models
+<div class="modal fade direction-rtl" id="userSearchModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close pull-left" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">جستجوی کاربر</h4>
+            </div>
+            <div class="alert-wrap"></div>
+            <div class="modal-body">
+                <form id="userFilter">
+                    <fieldset>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-4 pull-right">
+                                    <div class="form-group">
+                                        <label for="UserMobileSearch">موبایل</label>
+                                        <input type="text" class="form-control" id="UserMobileSearch" name="UserMobileSearch">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <div class="form-group">
+                                        <label for="UserNameSearch">نام</label>
+                                        <input type="text" class="form-control" id="UserNameSearch" name="UserNameSearch">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 pull-right">
+                                    <div class="form-group">
+                                        <label for="UserFamilySearch">نام خانوادگی</label>
+                                        <input type="text" class="form-control" id="UserFamilySearch" name="UserFamilySearch">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <button type="submit" id="user_search" class="btn btn-submit btn-primary">جستجو</button>
+                        </div>
+                    </fieldset>
+                </form>
+                <div class="spacer-40"></div>
+                <div class="table-wrapper">
+                    <header>
+                        <h3>نتیجه جستجو</h3>
+                    </header>
+                    <table class="table table-bordered table-striped" id="userTable" data-rt-breakpoint="600">
+                        <thead>
+                            <tr>
+                                <th scope="col" data-rt-column="Gen">جنسیت</th>
+                                <th scope="col" data-rt-column="Mobile">موبایل</th>
+                                <th scope="col" data-rt-column="Name">نام</th>
+                                <th scope="col" data-rt-column="Family">فامیل</th>
+                                <th scope="col" data-rt-column="NationalCode">کد ملی</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LP-402</td>
+                                <td>Landings page</td>
+                                <td><span class="label label-default">Acitve</span></td>
+                                <td>2012</td>
+                                <td>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!-- End .table-wrapper -->
+
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

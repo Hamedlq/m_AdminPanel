@@ -1,0 +1,272 @@
+@import url('helpers.css');
+@import url('fonts.css');
+
+/*
+ * ===============================================================
+ * BASIC CSS SELECTORS
+ * ===============================================================
+ */
+html{
+	height     : 100%;
+	min-height : 100%;
+	margin     : 0;
+	padding    : 0;
+}
+body{
+	position    : relative;
+	overflow-x  : hidden;
+	height      : 100%;
+	min-height  : 100%;
+	margin      : 0;
+	padding     : 0;
+	font-family : BYekan, Arial, Helvetica, sans-serif;	
+	font-size   : 13px;
+	line-height : 20px;
+	background-color: #eee;
+    background-image: none;
+	text-decoration: none;
+}
+a, 
+a:visited, 
+a:active,
+a:hover,
+a:focus{
+	text-decoration : none;
+	outline         : none!important;
+}
+a:hover{
+	text-decoration : none;
+}
+h1{
+	font-size : 20px
+}
+h2{
+	font-size : 20px;
+}
+h3{
+	font-size : 16px;
+}
+h4{
+	font-size : 12px;
+}
+i,
+a i{
+	width      : 14px;
+	font-size  : 14px;
+	text-align : center;
+}
+i{
+	cursor : default;
+}
+a i{
+	cursor          : pointer;
+	text-decoration : none;
+}
+a:hover i{
+	text-decoration : none;
+}
+p{
+	margin : 0;
+}
+*{
+	outline : 0!important;
+}
+main{
+	display : block;
+}
+
+/*
+ * ===============================================================
+ * CONTAINER
+ * ===============================================================
+ */
+
+#container-login{
+	position : relative;
+	height   : 100%;
+	width    : 300px;
+	margin   : 0 auto;
+}
+#container-loginmin{
+	position : relative;
+	height   : 100%;
+	width    : 400px;
+	margin   : 0 auto;
+}
+#container-signup{
+	position : relative;
+	height   : 100%;
+	width    : 440px;
+	margin   : 0 auto;
+}
+
+#container-questionnaire{
+	position : relative;
+	height   : 100%;
+	width    : 600px;
+	margin   : 0 auto;
+}
+
+/*
+ * ===============================================================
+ * LOGIN
+ * ===============================================================
+ */
+
+#login-header{
+	float  : left;
+	height : 30px;
+	width  : 100%;
+	margin : 0;
+}
+#login-logo{
+	float : left;
+	width : auto;
+}
+#login-header h1{
+	float       : left;
+	width       : auto;
+	margin      : 0;
+	line-height : 30px;
+}
+#login-header h4{
+	float       : left;
+	width       : auto;
+	margin      : 11px 0 0 5px;
+	font-size   : 12px;
+	font-weight : normal;
+}
+#login-box{
+	position : relative;
+}
+#container-loginmin #form-login label,
+#container-loginmin #form-login .btn{
+	margin : 0;
+}
+#login-box h2{
+	margin      : 0px 0 5px 0;
+	line-height : 20px;
+}
+.login-box-inner{
+	padding : 40px;
+}
+.login-box-inner > .alert{
+	margin : 0 0 40px 0;
+}
+#container-loginmin .login-box-inner{
+	padding : 35px 40px 40px 40px;
+}
+#login-footer{
+	padding    : 20px;
+	text-align : center;
+}
+#login-footer small{
+	display : block
+}
+#pwindicator{
+	height : 20px;
+}
+.username{
+	height      : 30px;
+	margin      : 0 0 10px 0;
+	line-height : 30px;
+}
+.green-check{
+	padding     : 5px 0;
+	font-weight : bold;
+}
+.red-check{
+	padding     : 5px 0;
+	font-weight : bold;
+}
+#lang{
+	float  : right;
+	margin : 0 0 0 5px;
+}
+.underline{
+	float   : left;
+	padding : 5px 0 5px;
+}
+.underline:focus{
+	text-decoration : underline
+}
+.underline:hover{
+	text-decoration : none;
+}
+#modal-tou-trigger{
+	text-decoration : underline;	
+}
+.login-avatar{
+	float  : left;
+	height : 70px;
+	width  : 70px;
+	margin : 0px 0 0 0;	
+}
+.form-text{
+	padding : 5px 0;
+}
+.login-avatar{
+	height : 90px;
+	width  : 90px;
+	margin : 0;
+}
+.login-avatar img{
+	float  : left;
+	height : 100%;
+	width  : 100%;
+}
+.login-fields-wrapper{
+	float : right;
+	width : 188px;
+}
+.powerwizard li{
+	width : 33.33333333%;
+}
+.powerwizard-content{
+	border : none!important
+}
+
+/*
+ * ===============================================================
+ * DEMO
+ * ===============================================================
+ */
+
+#demo-overview{
+	width  : 310px;
+	margin : 20px auto;
+}
+
+.login-box-inner,.underline{
+	color: #555;
+}
+.direction-rtl {
+    direction: rtl;
+}
+#login-box{
+	border-radius: 3px;
+	border: 1px solid #bbb;
+	background-color: #fff;
+    background-image: none;
+	box-shadow: 0 0 4px 0 #ccc;
+}
+label , .btn{
+font-weight:normal;
+margin:0;
+}
+input.form-control {
+    padding: 0 5px;
+}
+.btn-success {
+    background-image: linear-gradient(to bottom, #5cb85c 0%, #449d44 100%);
+    background-repeat: repeat-x;
+    border-color: #419641;
+    color: #ffffff;
+    text-shadow: none;
+}
+#fake-submit{
+    background-image: linear-gradient(to bottom, #ffffff 0%, #c0c0c0 100%);
+}
+.showpassword-hint {
+    display: none;
+}

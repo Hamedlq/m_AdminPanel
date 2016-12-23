@@ -1,0 +1,53 @@
+﻿<div id="address-container" class="pull-right col-md-6">
+    <img src="/Content/assets/img/From.png" style="display:none" />
+    <img src="/Content/assets/img/To.png" style="display:none" />
+    <form id="locform">
+        <div class="col-md-2 pull-right direction-rtl" id="srcAdd-btn" style="display: none">
+            <a href="#" class="btn-square-icontext">
+                <i class="fa  fa-arrow-right"></i>
+                <p>آدرس مبدا</p>
+                <span class="corner-label red"><i class="fa fa-times-circle"></i></span>
+            </a>
+        </div>
+        <div class="col-md-8 pull-right direction-rtl" id="srcAdd">
+            <label>آدرس مبدا</label>
+            <div class="input-group direction-ltr">
+                <span class="input-group-btn ">
+                    <button class="btn btn-default input-sm" id="srcDetailBtn" type="button"><i class="fa fa-plus-circle"></i></button>
+                </span>
+                <select class="select2 form-control input-sm direction-rtl" id="srcSelect">
+                    <option value="">رو نقشه کلیک کن</option>
+                </select>
+            </div>
+            <input type="text" class="form-control input-sm" placeholder="جزییات آدرس" id="sourceDetail">
+            <input type="hidden" id="srclatlng" value="" />
+        </div>
+        <div class="col-md-8 pull-right direction-rtl" id="dstAdd" style="display: none">
+            <label>آدرس مقصد</label>
+            <div class="input-group direction-ltr">
+                <span class="input-group-btn">
+                    <button class="btn btn-default input-sm" id="dstDetailBtn" type="button"><i class="fa fa-plus-circle"></i></button>
+                </span>
+                <select class="select2 form-control input-sm direction-rtl" id="dstSelect">
+                    <option value="">رو نقشه کلیک کن</option>
+                </select>
+            </div>
+            <input type="text" class="form-control input-sm" placeholder="جزییات آدرس" id="destinationDetail">
+            <input type="hidden" id="dstlatlng" value="" />
+        </div>
+        <div class="col-md-4 pull-right direction-rtl" id="dstAdd-btn">
+            <a href="#" class="btn-square-icontext pull-right">
+                <i class="fa  fa-arrow-left"></i>
+                <p>آدرس مقصد</p>
+                <span class="corner-label green"><i class="fa fa-check-circle"></i></span>
+            </a>
+        </div>
+        <div class="col-md-2 pull-right direction-rtl" id="address-btn" style="display: none">
+            <a href="#" class="btn-square-icontext">
+                <i class="fa  fa-arrow-left"></i>
+                <p>ثبت آدرس</p>
+                <span class="corner-label green"><i class="fa fa-check-circle"></i></span>
+            </a>
+        </div>
+    </form>
+</div>

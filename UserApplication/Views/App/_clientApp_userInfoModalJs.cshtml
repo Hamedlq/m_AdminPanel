@@ -1,0 +1,247 @@
+﻿<script type="text/javascript">
+    //---------userInfo-------------------------------------
+    /*$('#UserPic').fileinput({
+        language: 'fa',
+        showUpload: false,
+        autoReplace: true,
+        showCaption: false,
+        maxFileSize: 512,
+        maxFileCount: 1,
+        //initialPreview: ['<img src="../user/GetPersonalUserImage" class="file-preview-image" alt="' + $yourPic + '" >'],
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        uploadUrl: "../user/SubmitPersonalPic", // your upload server url
+        uploadAsync: true
+    }).on('filebatchuploadcomplete', function (event, files) {
+        //$('#IsUserPicUploaded').val(true);
+    });
+    $('#UserPic').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+        showExtraMessages(data);
+        if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+            $('#IsUserPicUploaded').val('true');
+        }
+    });
+    $('#UserPic').on('fileloaded', function (event, file, previewId, index, reader) {
+        $('#UserPic').fileinput('upload');
+    });
+    $('#personalInfoForm').submit(function (e) {
+        e.preventDefault();
+        $('.alert-wrap').children().remove();
+        var $this = $(this);
+        uploadUserInfo($this);
+    });
+    //----------------LicenseInfo------------------------------
+    $('#LicensePic').fileinput({
+        language: 'fa',
+        showUpload: false,
+        autoReplace: true,
+        showCaption: false,
+        maxFileSize: 512,
+        maxFileCount: 1,
+        //initialPreview: ['<img src="../user/GetLicenseImage" class="file-preview-image" alt="' + $picture + ' ' + $driveLicense + '" >'],
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        uploadUrl: "../user/SubmitLicensePic", // your upload server url
+        uploadAsync: true
+    }).on('filebatchuploadcomplete', function (event, files) {
+        //$('#IsLicensePicUploaded').val(true);
+    });
+    $('#LicensePic').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+        showExtraMessages(data);
+        if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+            $('#IsLicensePicUploaded').val('true');
+        }
+    });
+    $('#LicensePic').on('fileloaded', function (event, file, previewId, index, reader) {
+        $('#LicensePic').fileinput('upload');
+    });
+    $('#LicenseInfoForm').submit(function (e) {
+        e.preventDefault();
+        $('.alert-wrap').children().remove();
+        var $this = $(this);
+        uploadLicenseInfo($this);
+    });
+    //-----------------CarInfo------------------------------------------------------
+    $('#CarCardPic').fileinput({
+        language: 'fa',
+        showUpload: false,
+        autoReplace: true,
+        showCaption: false,
+        maxFileSize: 512,
+        maxFileCount: 2,
+        minFileCount: 2,
+        /*initialPreview: ['<img src="../user/GetCarCardImage" class="file-preview-image" alt="' + $CarCard + '" >',
+            '<img src="../user/GetCarCardBckImage" class="file-preview-image" alt="' + $CarCardBack + '" >'],#1#
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        uploadUrl: "../user/SubmitCarPic", 
+        uploadAsync: true
+        //uploadExtraData: carInfoJmodel
+    }).on('filebatchuploadcomplete', function (event, files) {
+        //$('#IsCarCardPicUploaded').val('true');
+    });
+    $('#CarCardPic').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+        showExtraMessages(data);
+        if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+            $('#IsCarCardPicUploaded').val('true');
+        }
+    });
+    $('#CarCardPic').on('fileloaded', function (event, file, previewId, index, reader) {
+        $('#CarCardPic').fileinput('upload');
+    });
+    $('#carInfoForm').submit(function (e) {
+        $('.alert-wrap').children().remove();
+        e.preventDefault();
+        var $this = $(this);
+        uploadCarInfo($this);
+    });
+    //-----------------BankInfo------------------------------------------------------
+    $('#BankCardPic').fileinput({
+        language: 'fa',
+        showUpload: false,
+        autoReplace: true,
+        showCaption: false,
+        maxFileSize: 512,
+        maxFileCount: 2,
+        minFileCount: 2,
+        initialPreview: ['<img src="../user/GetBankCardImage" class="file-preview-image" alt="' + $BankCard + '" >'],
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        uploadUrl: "../user/SubmitBankPic",
+        uploadAsync: true
+        //uploadExtraData: carInfoJmodel
+    }).on('filebatchuploadcomplete', function (event, files) {
+        //$('#IsCarCardPicUploaded').val('true');
+    });
+    $('#BankCardPic').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+        showExtraMessages(data);
+        if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+            $('#IsBankCardPicUploaded').val('true');
+        }
+    });
+    $('#BankCardPic').on('fileloaded', function (event, file, previewId, index, reader) {
+        $('#BankCardPic').fileinput('upload');
+    });
+    $('#bankInfoForm').submit(function (e) {
+        $('.alert-wrap').children().remove();
+        e.preventDefault();
+        var $this = $(this);
+        uploadBankInfo($this);
+    });
+    //------------------ functions----------------------------------
+    function uploadCarInfo(form) {
+        $formSubmitBtn = form.find('.btn-submit');
+        $formSubmitBtnTxt = $formSubmitBtn.text();
+        $formSubmitBtn.text($pleasewait);
+        $('.alert-wrap').children().remove();
+        getCarInfoFromUI();
+        $.ajax({
+            type: 'POST',
+            url: '../user/SubmitCarInfo',
+            data: carInfoJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+                    if ($userInfoModalShowType === "InProcess") {
+                        $("#userModal").modal("hide");
+                        $("#pricingModal").modal({ backdrop: 'static', keyboard: false });
+                    }
+                    else if ($userInfoModalShowType === "byBtnClick") {
+                        activeNextTab("bankInfo");
+                    }
+                }
+                $formSubmitBtn.text($formSubmitBtnTxt);
+            }
+        });
+    }
+    function uploadLicenseInfo(form) {
+        $formSubmitBtn = form.find('.btn-submit');
+        $formSubmitBtnTxt = $formSubmitBtn.text();
+        $formSubmitBtn.text($pleasewait);
+        $('.alert-wrap').children().remove();
+        getLicenseInfoFromUI();
+        $.ajax({
+            type: 'POST',
+            url: '../user/SubmitLicenseInfo',
+            data: licenseInfoJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+                    activeNextTab("carInfo");
+                }
+                $formSubmitBtn.text($formSubmitBtnTxt);
+            }
+        });
+    }
+    function uploadUserInfo(form) {
+        $formSubmitBtn = form.find('.btn-submit');
+        $formSubmitBtnTxt = $formSubmitBtn.text();
+        $formSubmitBtn.text($pleasewait);
+        $('.alert-wrap').children().remove();
+        getPersonalInfoFromUI();
+        $.ajax({
+            type: 'POST',
+            url: '../user/SubmitPersonalInfo',
+            data: userPersonalInfoJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+                    if ($userInfoModalShowType === "InProcess") {
+                        gotoPricingModal();
+                    }
+                    else if ($userInfoModalShowType = "byBtnClick") {
+                        activeNextTab("licenseInfo");
+                    }
+                }
+                $formSubmitBtn.text($formSubmitBtnTxt);
+            }
+        });
+    }
+    function uploadBankInfo(form) {
+        $formSubmitBtn = form.find('.btn-submit');
+        $formSubmitBtnTxt = $formSubmitBtn.text();
+        $formSubmitBtn.text($pleasewait);
+        $('.alert-wrap').children().remove();
+        getBankInfoFromUI();
+        $.ajax({
+            type: 'POST',
+            url: '../user/SubmitBankInfo',
+            data: bankInfoJmodel,
+            success: function (data) {
+                showExtraMessages(data);
+                if (data.Errors === undefined || data.Errors === null || data.Errors.length === 0) {
+                    $("#userModal").modal("hide");
+                }
+                $formSubmitBtn.text($formSubmitBtnTxt);
+            }
+        });
+    }
+    function gotoPricingModal() {
+        var $userHasCar = $("#IsDrive").val();
+        if ($userHasCar === "false") {
+            $("#userModal").modal("hide");
+            $("#pricingModal").modal({ backdrop: 'static', keyboard: false });
+        }
+        if ($userHasCar === "true") {
+            activeNextTab("licenseInfo");
+        }
+    }
+    //------------------------event handler---------------------------------------
+    $('.nextStep').click(function (e) {
+        e.preventDefault();
+        $('.alert-wrap').children().remove();
+        var $this = $(this);
+        var tabId = $this.parents(".tab-pane").prop("id");
+        switch (tabId) {
+            case "licenseInfo":
+                activeNextTab("carInfo");
+                break;
+            case "carInfo":
+                if ($userInfoModalShowType === "InProcess") {
+                    $("#userModal").modal("hide");
+                    $("#pricingModal").modal({ backdrop: 'static', keyboard: false });
+                }
+                else if ($userInfoModalShowType === "byBtnClick") {
+                    activeNextTab("bankInfo");
+                }
+                break;
+        }
+    });
+    */
+</script>
